@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "228252317659",
+    "project_id": "pokequiz-1d3fc",
+    "storage_bucket": "pokequiz-1d3fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228252317659:android:e3b3f71691995156c859fe",
+        "android_client_info": {
+          "package_name": "com.example.pokequiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNKWs5sj-PjiiYN45jkKfYV4U8fgArhP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

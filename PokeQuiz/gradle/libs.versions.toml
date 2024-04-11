@@ -9,8 +9,16 @@ lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.8.2"
 composeBom = "2024.04.00"
 navigationCompose = "2.7.7"
+googlegmsservices = "4.4.1"
+googlefirebase = "32.8.0"
+googleplayserviceauth = "21.0.0"
 
 [libraries]
+google-firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref = "googlefirebase"}
+google-firebase-firestore = {group = "com.google.firebase", name = "firebase-firestore"}
+google-firebase-auth = {group = "com.google.firebase", name = "firebase-auth"}
+google-android-gms-play-services = {group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleplayserviceauth"}
+google-firebase-storage = {group = "com.google.firebase", name = "firebase-storage"}
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -30,4 +38,4 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+googleGmsServices = { id = "com.google.gms.google-services", version.ref = "googlegmsservices"}

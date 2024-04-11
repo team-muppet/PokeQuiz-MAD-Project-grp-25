@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.googleGmsServices)
 }
 
 android {
@@ -51,6 +52,11 @@ android {
 
 dependencies {
     implementation(libs.androidx.navigation.compose)
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.google.firebase.firestore)
+    implementation(libs.google.firebase.auth)
+    implementation(libs.google.firebase.storage)
+    implementation(libs.google.android.gms.play.services)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
