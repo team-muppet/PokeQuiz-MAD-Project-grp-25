@@ -2,7 +2,7 @@ package com.example.pokequiz
 
 import androidx.navigation.NavHostController
 
-class AppState (private val navController: NavHostController) {
+class AppState (val navController: NavHostController) {
     fun popUp() {
         navController.popBackStack()
     }

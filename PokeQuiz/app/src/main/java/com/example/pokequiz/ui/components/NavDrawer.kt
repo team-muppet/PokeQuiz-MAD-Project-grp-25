@@ -19,17 +19,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.example.pokequiz.AppState
+import com.example.pokequiz.HOME
+import com.example.pokequiz.POKEMON_LIST
+import com.example.pokequiz.POKE_QUIZ1
+import com.example.pokequiz.POKE_QUIZ2
+import com.example.pokequiz.POKE_QUIZ3
+import com.example.pokequiz.SCOREBOARD
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavDrawer(navController : NavHostController, screenContent : @Composable () -> Unit){
+fun NavDrawer(appState: AppState, screenContent : @Composable () -> Unit){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     fun navAndClose(route : String){
         scope.launch { drawerState.close() }
-        navController.navigate(route);
+        appState.navigate(route);
     }
 
     ModalNavigationDrawer(
@@ -39,32 +46,32 @@ fun NavDrawer(navController : NavHostController, screenContent : @Composable () 
                 NavigationDrawerItem(
                     label = { Text(text = "Home") },
                     selected = false,
-                    onClick = { navAndClose("home") }
+                    onClick = { navAndClose(HOME) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Pokémon List") },
                     selected = false,
-                    onClick = { navAndClose("pokemonList") }
+                    onClick = { navAndClose(POKEMON_LIST) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Pokémon Quiz 1") },
                     selected = false,
-                    onClick = { navAndClose("pokeQuiz1") }
+                    onClick = { navAndClose(POKE_QUIZ1) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Pokémon Quiz 2") },
                     selected = false,
-                    onClick = { navAndClose("pokeQuiz2") }
+                    onClick = { navAndClose(POKE_QUIZ2) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Pokémon Quiz 3") },
                     selected = false,
-                    onClick = { navAndClose("pokeQuiz3") }
+                    onClick = { navAndClose(POKE_QUIZ3) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Pokémon Quiz Scoreboard") },
                     selected = false,
-                    onClick = { navAndClose("scoreboard"); }
+                    onClick = { navAndClose(SCOREBOARD); }
                 )
             }
         }
