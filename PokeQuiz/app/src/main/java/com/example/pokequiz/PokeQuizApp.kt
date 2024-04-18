@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
@@ -23,9 +24,14 @@ import com.example.pokequiz.ui.components.PokemonList
 import com.example.pokequiz.ui.components.Scoreboard
 import com.example.pokequiz.ui.components.SilhouetteQuiz
 import com.example.pokequiz.ui.theme.PokeQuizTheme
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun PokeQuizApp(accountService: AccountService){
+    val isAuthenticated = accountService.currentUser
+        .map { it != null }  // Maps the User? to a Boolean indicating if the user is authenticated
+        .collectAsState(initial = false)  // Collect as state in Compose, providing an initial value
+
     PokeQuizTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -33,7 +39,16 @@ fun PokeQuizApp(accountService: AccountService){
         ) {
             val appState = rememberAppState();
 
-            NavDrawer(appState) {
+            if(isAuthenticated.value)
+            {
+                NavDrawer(appState) {
+                    NavHost(navController = appState.navController, startDestination = SPLASH_SCREEN) {
+                        pokeQuizGraph(appState)
+                    }
+                }
+            }
+            else
+            {
                 NavHost(navController = appState.navController, startDestination = SPLASH_SCREEN) {
                     pokeQuizGraph(appState)
                 }
