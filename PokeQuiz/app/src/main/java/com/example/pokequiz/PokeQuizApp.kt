@@ -17,6 +17,7 @@ import com.example.pokequiz.ui.components.PokeQuizHome
 import com.example.pokequiz.ui.components.PokemonDetails
 import com.example.pokequiz.ui.components.PokemonList
 import com.example.pokequiz.ui.components.Scoreboard
+import com.example.pokequiz.ui.components.SilhouetteQuiz
 import com.example.pokequiz.ui.theme.PokeQuizTheme
 
 @Composable
@@ -52,6 +53,6 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState){
     }
     composable(POKE_QUIZ1){ Text(text = "Quiz 1") }
     composable(POKE_QUIZ2){ Text(text = "Quiz 2") }
-    composable(POKE_QUIZ3){ Text(text = "Quiz 3") }
+    composable(POKE_QUIZ3){ SilhouetteQuiz() }
     composable(SCOREBOARD){ Scoreboard() }
 }
