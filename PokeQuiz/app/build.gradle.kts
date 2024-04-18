@@ -51,6 +51,12 @@ android {
 }
 
 dependencies {
+    //Hilt
+    implementation(libs.hilt.android)
+
+    //Json
+    implementation(libs.kotlinx.serialization.json)
+
     implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.firestore)
