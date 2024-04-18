@@ -1,4 +1,4 @@
-package com.example.pokequiz.model.service.impl
+package com.example.pokequiz.model.service.implementation
 
 import android.content.Context
 import com.example.pokequiz.model.Pokemon
