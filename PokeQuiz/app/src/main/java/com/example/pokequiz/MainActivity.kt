@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    //val appState = rememberAppState();
                     val navController = rememberNavController();
                     NavDrawer(navController){
                         NavHost(navController = navController, startDestination = "home"){
