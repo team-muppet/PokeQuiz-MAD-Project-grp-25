@@ -1,5 +1,7 @@
 package com.example.pokequiz.model.service
 
-interface PokemonService {
+import com.example.pokequiz.model.Pokemon
 
+interface PokemonService {
+    suspend fun getPokemon() : List<Pokemon>
 }

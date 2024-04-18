@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleGmsServices)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.serilization)
 }
 
 android {
@@ -41,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.12"
     }
     packaging {
         resources {
@@ -53,9 +56,17 @@ android {
 dependencies {
     //Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    kapt(libs.hilt.compiler)
 
     //Json
     implementation(libs.kotlinx.serialization.json)
+
+    //Live data
+    implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.google.firebase.bom))
