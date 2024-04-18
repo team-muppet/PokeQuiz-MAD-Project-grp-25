@@ -12,6 +12,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pokequiz.screens.sign_in.SignInScreen
+import com.example.pokequiz.screens.sign_up.SignUpScreen
+import com.example.pokequiz.screens.splash.SplashScreen
 import com.example.pokequiz.ui.components.NavDrawer
 import com.example.pokequiz.ui.components.PokeQuizHome
 import com.example.pokequiz.ui.components.PokemonDetails
@@ -29,7 +32,7 @@ fun PokeQuizApp(){
             val appState = rememberAppState();
 
             NavDrawer(appState){
-                NavHost(navController = appState.navController, startDestination = "home"){
+                NavHost(navController = appState.navController, startDestination = SPLASH_SCREEN){
                     pokeQuizGraph(appState)
                 }
             }
@@ -54,4 +57,16 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState){
     composable(POKE_QUIZ2){ Text(text = "Quiz 2") }
     composable(POKE_QUIZ3){ Text(text = "Quiz 3") }
     composable(SCOREBOARD){ Scoreboard() }
+
+    composable(SIGN_IN_SCREEN) {
+        SignInScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
+    composable(SIGN_UP_SCREEN) {
+        SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
+    composable(SPLASH_SCREEN) {
+        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
 }
