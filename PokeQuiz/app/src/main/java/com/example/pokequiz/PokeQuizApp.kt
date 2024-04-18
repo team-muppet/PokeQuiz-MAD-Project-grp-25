@@ -5,10 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,11 +26,6 @@ import com.example.pokequiz.ui.theme.PokeQuizTheme
 
 @Composable
 fun PokeQuizApp(accountService: AccountService){
-    var isAuthenticated = MutableLiveData<Boolean>(true)
-    LaunchedEffect() {
-        isAuthenticated.value = accountService.hasUser()
-    }
-    
     PokeQuizTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -40,16 +33,7 @@ fun PokeQuizApp(accountService: AccountService){
         ) {
             val appState = rememberAppState();
 
-            if(isAuthenticated.value == true)
-            {
-                NavDrawer(appState) {
-                    NavHost(navController = appState.navController, startDestination = SPLASH_SCREEN) {
-                        pokeQuizGraph(appState)
-                    }
-                }
-            }
-            else
-            {
+            NavDrawer(appState) {
                 NavHost(navController = appState.navController, startDestination = SPLASH_SCREEN) {
                     pokeQuizGraph(appState)
                 }
