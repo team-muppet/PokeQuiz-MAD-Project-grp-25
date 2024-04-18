@@ -68,6 +68,10 @@ dependencies {
     //Live data
     implementation(libs.androidx.runtime.livedata)
 
+    //Icons https://github.com/DevSrSouza/compose-icons
+    implementation(libs.font.awesome) // https://github.com/DevSrSouza/compose-icons/blob/master/font-awesome/DOCUMENTATION.md
+    implementation(libs.icons.tabler.icons) // https://github.com/DevSrSouza/compose-icons/blob/master/tabler-icons/DOCUMENTATION.md
+
     implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.firestore)

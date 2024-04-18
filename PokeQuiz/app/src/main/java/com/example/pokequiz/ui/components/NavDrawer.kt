@@ -26,6 +26,8 @@ import com.example.pokequiz.POKE_QUIZ1
 import com.example.pokequiz.POKE_QUIZ2
 import com.example.pokequiz.POKE_QUIZ3
 import com.example.pokequiz.SCOREBOARD
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Logout
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +86,8 @@ fun NavDrawer(
                         scope.launch {
                             viewModel.signOut()
                         }
-                    }
+                    },
+                    icon = { Icon(imageVector = TablerIcons.Logout, contentDescription = "Sign out") },
                 )
             }
         }
