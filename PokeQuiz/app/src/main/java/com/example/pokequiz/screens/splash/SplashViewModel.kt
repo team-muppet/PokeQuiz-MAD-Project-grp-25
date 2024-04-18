@@ -1,7 +1,7 @@
 package com.example.pokequiz.screens.splash
 
 
-import com.example.pokequiz.NOTES_LIST_SCREEN
+import com.example.pokequiz.HOME
 import com.example.pokequiz.SIGN_IN_SCREEN
 import com.example.pokequiz.SPLASH_SCREEN
 import com.example.pokequiz.model.service.AccountService
@@ -15,7 +15,7 @@ class SplashViewModel @Inject constructor(
 ) : PokeQuizViewModel() {
 
     fun onAppStart(openAndPopUp: (String, String) -> Unit) {
-        if (accountService.hasUser()) openAndPopUp(NOTES_LIST_SCREEN, SPLASH_SCREEN)
+        if (accountService.hasUser()) openAndPopUp(HOME, SPLASH_SCREEN)
         else openAndPopUp(SIGN_IN_SCREEN, SPLASH_SCREEN)
     }
 }
