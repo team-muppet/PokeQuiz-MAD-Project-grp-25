@@ -27,6 +27,7 @@ import com.example.pokequiz.POKE_QUIZ2
 import com.example.pokequiz.POKE_QUIZ3
 import com.example.pokequiz.SCOREBOARD
 import kotlinx.coroutines.launch
+import com.example.pokequiz.model.service.AccountService
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,38 +43,38 @@ fun NavDrawer(appState: AppState, screenContent : @Composable () -> Unit){
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                NavigationDrawerItem(
-                    label = { Text(text = "Home") },
-                    selected = false,
-                    onClick = { navAndClose(HOME) }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Pokémon List") },
-                    selected = false,
-                    onClick = { navAndClose(POKEMON_LIST) }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz 1") },
-                    selected = false,
-                    onClick = { navAndClose(POKE_QUIZ1) }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz 2") },
-                    selected = false,
-                    onClick = { navAndClose(POKE_QUIZ2) }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz 3") },
-                    selected = false,
-                    onClick = { navAndClose(POKE_QUIZ3) }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz Scoreboard") },
-                    selected = false,
-                    onClick = { navAndClose(SCOREBOARD); }
-                )
-            }
+                ModalDrawerSheet {
+                    NavigationDrawerItem(
+                        label = { Text(text = "Home") },
+                        selected = false,
+                        onClick = { navAndClose(HOME) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Pokémon List") },
+                        selected = false,
+                        onClick = { navAndClose(POKEMON_LIST) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Pokémon Quiz 1") },
+                        selected = false,
+                        onClick = { navAndClose(POKE_QUIZ1) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Pokémon Quiz 2") },
+                        selected = false,
+                        onClick = { navAndClose(POKE_QUIZ2) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Pokémon Quiz 3") },
+                        selected = false,
+                        onClick = { navAndClose(POKE_QUIZ3) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text(text = "Pokémon Quiz Scoreboard") },
+                        selected = false,
+                        onClick = { navAndClose(SCOREBOARD); }
+                    )
+                }
         }
     ) {
         Scaffold (

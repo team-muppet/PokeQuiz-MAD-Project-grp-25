@@ -1,7 +1,9 @@
 package com.example.pokequiz.model.service.module
 
+import com.example.pokequiz.model.service.AccountService
 import com.example.pokequiz.model.service.PokemonService
 import com.example.pokequiz.model.service.impl.PokemonServiceImpl
+import com.example.pokequiz.model.service.implementation.AccountServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -11,5 +13,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class ServiceModule {
     @Binds
-    abstract fun provideAccountService(impl: PokemonServiceImpl): PokemonService
+    abstract fun providePokemonService(impl: PokemonServiceImpl): PokemonService
+    @Binds
+    abstract fun provideAccountService(impl: AccountServiceImpl): AccountService
 }
