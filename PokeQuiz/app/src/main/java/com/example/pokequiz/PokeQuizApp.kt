@@ -5,15 +5,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.pokequiz.model.service.AccountService
 import com.example.pokequiz.screens.sign_in.SignInScreen
 import com.example.pokequiz.screens.sign_up.SignUpScreen
 import com.example.pokequiz.screens.splash.SplashScreen
@@ -24,13 +24,10 @@ import com.example.pokequiz.ui.components.PokemonList
 import com.example.pokequiz.ui.components.Scoreboard
 import com.example.pokequiz.ui.components.SilhouetteQuiz
 import com.example.pokequiz.ui.theme.PokeQuizTheme
-import kotlinx.coroutines.flow.map
 
 @Composable
-fun PokeQuizApp(accountService: AccountService){
-    val isAuthenticated = accountService.currentUser
-        .map { it != null }  // Maps the User? to a Boolean indicating if the user is authenticated
-        .collectAsState(initial = false)  // Collect as state in Compose, providing an initial value
+fun PokeQuizApp(viewModel: PokeQuizAppViewModel = hiltViewModel()){
+    val isAuthenticated = viewModel.isAuthenticated.observeAsState(false)
 
     PokeQuizTheme {
         Surface(
