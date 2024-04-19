@@ -64,6 +64,7 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     //Json
     implementation(libs.kotlinx.serialization.json)
