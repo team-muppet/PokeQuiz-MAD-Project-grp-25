@@ -1,6 +1,5 @@
 package com.example.pokequiz.screens.silhoutte_quiz
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,41 +15,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.pokequiz.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
-data class Pokemon(val name: String, val imageId: Int)
+data class Pokemon(val name: String, val image: String)
 
 // Sample data
 val pokemonList = listOf(
-    Pokemon("Pikachu", R.drawable.pikachu),
-    Pokemon("Bulbasaur", R.drawable.bulbasaur),
-    Pokemon("Charmander", R.drawable.charmander),
-    Pokemon("Squirtle", R.drawable.squirtle)
+    Pokemon("Pikachu", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"),
+    Pokemon("Bulbasaur", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"),
+    Pokemon("Charmander", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"),
+    Pokemon("Squirtle", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png")
 )
 
 @Composable
-fun SilhouetteQuiz(){
-    var currentPokemon by remember { mutableStateOf(pokemonList.random()) }
+fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
+    val currentPokemon = remember { mutableStateOf(pokemonList.random()) }
     var gameState by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = currentPokemon.imageId),
-            contentDescription = currentPokemon.name,
+
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(currentPokemon.value.image)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Guess that pokemon!",
             modifier = Modifier.size(300.dp),
             colorFilter = if(gameState == null) ColorFilter.tint(Color.Black) else null
         )
-        //Spacer(modifier = Modifier.height(5.dp))
 
-        pokemonList.shuffled().take(4).forEach { pokemon ->
+        pokemonList.forEach { pokemon ->
             Button(
                 onClick = {
-                    gameState = if (pokemon.name == currentPokemon.name) "You win!" else "You lose!"
+                    gameState = if (pokemon.name == currentPokemon.value.name) "You win!" else "You lose!"
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,7 +67,7 @@ fun SilhouetteQuiz(){
         gameState?.let {
             Text(text = it, modifier = Modifier.padding(top = 16.dp))
             Button(onClick = {
-                currentPokemon = pokemonList.random()  // Change the Pokémon after a guess
+                currentPokemon.value = pokemonList.random()  // Change the Pokémon after a guess
                 gameState = null
             }) {
                 Text(text = "Play again")

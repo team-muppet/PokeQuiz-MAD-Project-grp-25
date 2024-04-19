@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.2"
+coilCompose = "2.6.0"
 coreView = "1.13.0"
 fontAwesome = "1.1.0"
 fragmentKtx = "1.6.2"
@@ -36,6 +37,7 @@ androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensi
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 font-awesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "fontAwesome" }
 google-firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref = "googlefirebase"}
 google-firebase-firestore = {group = "com.google.firebase", name = "firebase-firestore"}

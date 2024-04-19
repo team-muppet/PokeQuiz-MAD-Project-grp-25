@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     kapt(libs.hilt.compiler)
 
+    //Coil
+    implementation(libs.coil.compose)
+
     //Json
     implementation(libs.kotlinx.serialization.json)
 
