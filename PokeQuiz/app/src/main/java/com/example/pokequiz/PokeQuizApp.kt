@@ -18,12 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokequiz.screens.sign_in.SignInScreen
 import com.example.pokequiz.screens.sign_up.SignUpScreen
 import com.example.pokequiz.screens.splash.SplashScreen
-import com.example.pokequiz.ui.components.NavDrawer
-import com.example.pokequiz.ui.components.PokeQuizHome
-import com.example.pokequiz.ui.components.PokemonDetails
-import com.example.pokequiz.ui.components.PokemonList
-import com.example.pokequiz.ui.components.Scoreboard
-import com.example.pokequiz.ui.components.SilhouetteQuiz
+import com.example.pokequiz.ui.components.navdrawer.NavDrawer
+import com.example.pokequiz.screens.pokequiz_home.PokeQuizHome
+import com.example.pokequiz.screens.pokemon_details.PokemonDetails
+import com.example.pokequiz.screens.pokemon_list.PokemonList
+import com.example.pokequiz.screens.scoreboard.Scoreboard
+import com.example.pokequiz.screens.silhoutte_quiz.SilhouetteQuiz
 import com.example.pokequiz.ui.theme.PokeQuizTheme
 
 @Composable

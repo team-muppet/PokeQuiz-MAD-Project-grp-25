@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.screens.pokequiz_home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

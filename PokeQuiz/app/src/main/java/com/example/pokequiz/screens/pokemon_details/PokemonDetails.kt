@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.screens.pokemon_details
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

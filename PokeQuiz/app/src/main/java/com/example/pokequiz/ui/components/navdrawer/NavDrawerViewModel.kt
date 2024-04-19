@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.ui.components.navdrawer
 
 import androidx.lifecycle.ViewModel
 import com.example.pokequiz.model.service.AccountService

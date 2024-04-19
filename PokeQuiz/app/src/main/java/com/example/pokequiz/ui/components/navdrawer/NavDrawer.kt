@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.ui.components.navdrawer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding

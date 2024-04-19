@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.screens.pokemon_list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn

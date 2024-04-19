@@ -1,4 +1,4 @@
-package com.example.pokequiz.ui.components
+package com.example.pokequiz.screens.pokemon_list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
