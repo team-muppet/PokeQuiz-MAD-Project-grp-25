@@ -1,11 +1,14 @@
 package com.example.pokequiz.screens.silhoutte_quiz
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,11 +24,13 @@ import coil.compose.SubcomposeAsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.pokequiz.R
+import com.example.pokequiz.ui.components.PokemonSelector.PokemonSelector
 
 @Composable
 fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
-    val currentPool by viewModel.currentPool.observeAsState()
     val currentPokemon by viewModel.currentPokemon.observeAsState()
+    val guessedPokemon by viewModel.guessedPokemon.observeAsState()
+    val gamePokemon by viewModel.gamePokemon.observeAsState()
     val gameState by viewModel.gameState.observeAsState()
 
     Column(
@@ -33,8 +38,9 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when {
-            currentPool.isNullOrEmpty() -> CircularProgressIndicator()
+            currentPokemon == null -> CircularProgressIndicator()
             else -> {
+                // Silhouette of pokemon
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data("file:///android_asset/images/${currentPokemon?.id}.svg")
@@ -43,26 +49,48 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
                         .decoderFactory(SvgDecoder.Factory())
                         .build(),
                     contentDescription = "Guess that pokemon!",
-                    modifier = Modifier.size(300.dp),
+                    modifier = Modifier.size(250.dp),
                     loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
                     colorFilter = if (gameState == null) ColorFilter.tint(Color.Black) else null
                 )
+                
+                Spacer(modifier = Modifier.padding(5.dp))
 
-                currentPool?.forEach { pokemon ->
-                    Button(
-                        onClick = { viewModel.checkGuess(pokemon.name) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Text(text = pokemon.name.replaceFirstChar { it.titlecase() })
-                    }
-                }
+                PokemonSelector(
+                    gamePokemon = gamePokemon.orEmpty(),
+                    makeGuess = { pokemon -> viewModel.checkGuess(pokemon) }
+                )
 
+                // Play again button
                 gameState?.let {
                     Text(text = it, modifier = Modifier.padding(top = 16.dp))
                     Button(onClick = { viewModel.resetGame() }) {
                         Text(text = "Play again")
+                    }
+                }
+
+                Spacer(modifier = Modifier.padding(5.dp))
+
+                // Wrong guesses
+                LazyColumn {
+                    items(guessedPokemon.orEmpty()){
+                        ListItem(
+                            headlineContent = { Text(it.name.replaceFirstChar { it.titlecase() }) },
+                            leadingContent = {
+                                SubcomposeAsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data("file:///android_asset/images/${it.id}.svg")
+                                        .fallback(R.drawable.ic_launcher_foreground)
+                                        .error(R.drawable.ic_launcher_foreground)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "",
+                                    loading = { CircularProgressIndicator(modifier = Modifier.align(
+                                        Alignment.Center)) },
+                                    modifier = Modifier.size(50.dp)
+                                )
+                            }
+                        )
                     }
                 }
             }
