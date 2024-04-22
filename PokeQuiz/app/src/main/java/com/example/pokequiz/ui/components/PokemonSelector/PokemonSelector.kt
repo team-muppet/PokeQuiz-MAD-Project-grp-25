@@ -60,7 +60,9 @@ fun PokemonSelector(
             onSearch = {
                 active = false
                 searchQuery = ""
-                makeGuess(filteredPokemon.first())
+                if(filteredPokemon.isNotEmpty()){
+                    makeGuess(filteredPokemon.first())
+                }
             },
             leadingIcon = {
                 IconButton(onClick = { active = false }) {

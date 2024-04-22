@@ -51,7 +51,7 @@ class SilhouetteQuizViewModel @Inject constructor(
         _guessedPokemon.value = tmp
 
         // Update _gamePokemon
-        _gamePokemon.value = _pokemonList.value.orEmpty().filter { it !in guessedPokemon.value.orEmpty() }
+        _gamePokemon.value = _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
         // Check if game won
         if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) _gameState.value = "You win!"

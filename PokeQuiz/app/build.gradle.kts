@@ -66,6 +66,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 
+    //Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+
     //Json
     implementation(libs.kotlinx.serialization.json)
 
