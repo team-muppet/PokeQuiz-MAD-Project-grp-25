@@ -54,6 +54,10 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                 }
             }
             else -> {
+                Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
+
+                Spacer(modifier = Modifier.padding(5.dp))
+                
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(currentPokemon?.images?.small)

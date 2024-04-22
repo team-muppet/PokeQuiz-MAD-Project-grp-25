@@ -49,6 +49,10 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
                 }
             }
             else -> {
+                Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
+
+                Spacer(modifier = Modifier.padding(5.dp))
+
                 // Silhouette of pokemon
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
