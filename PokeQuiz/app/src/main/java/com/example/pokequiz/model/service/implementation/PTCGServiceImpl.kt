@@ -18,17 +18,19 @@ class PTCGServiceImpl @Inject constructor() {
 
     private val service: PTCGService = retrofit.create(PTCGService::class.java)
 
-    suspend fun getGen1Cards(): List<PokemonCard> {
+    suspend fun getGen1Card(pokemonId : Int) : PokemonCard{
         try {
-            val page1 = service.getGen1Cards(page = 1)
-            val page2 = service.getGen1Cards(page = 2)
-            val data = page1.data + page2.data
-            return data.distinctBy { it.name }
-        } catch (e: Exception){
+            val res = service.getCards(
+                query = "nationalPokedexNumbers:[${pokemonId} TO ${pokemonId}] set.series:\"E-Card\" supertype:\"Pokémon\"",
+                select = "name,nationalPokedexNumbers,images",
+                orderBy = "nationalPokedexNumbers",
+                page = 1
+            )
+            return res.data[0]
+        }catch (e: Exception){
             // Do some error handling
             throw e
         }
     }
-
 
 }

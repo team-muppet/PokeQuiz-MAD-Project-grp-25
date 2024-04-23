@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface PTCGService {
     @GET("cards")
-    suspend fun getGen1Cards(
+    suspend fun getCards(
         @Query("q") query: String = "nationalPokedexNumbers:[1 TO 151] set.series:\"E-Card\" supertype:\"Pokémon\"",
         @Query("select") select: String = "name,nationalPokedexNumbers,images",
         @Query("orderBy") orderBy: String = "nationalPokedexNumbers",

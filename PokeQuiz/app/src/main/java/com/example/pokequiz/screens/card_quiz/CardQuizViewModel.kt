@@ -21,9 +21,6 @@ class CardQuizViewModel @Inject constructor(
 ) : ViewModel() {
     private val _pokemonList = MutableLiveData<List<Pokemon>>(listOf())
 
-    private val _cardList = MutableLiveData<List<PokemonCard>>(emptyList())
-    val cardList: LiveData<List<PokemonCard>> = _cardList
-
     private val _guessedPokemon = MutableLiveData<List<Pokemon>>(emptyList())
     val guessedPokemon: LiveData<List<Pokemon>> = _guessedPokemon
 
@@ -31,7 +28,10 @@ class CardQuizViewModel @Inject constructor(
     val gamePokemon: LiveData<List<Pokemon>> = _gamePokemon
 
     private val _currentCard = MutableLiveData<PokemonCard?>(null)
-    val currentPokemon: LiveData<PokemonCard?> = _currentCard
+    val currentCard: LiveData<PokemonCard?> = _currentCard
+
+    private val _currentPokemon = MutableLiveData<Pokemon?>(null)
+    val currentPokemon: LiveData<Pokemon?> = _currentPokemon
 
     private val _gameState = MutableLiveData<Boolean>(false)
     val gameState: LiveData<Boolean> = _gameState
@@ -39,36 +39,28 @@ class CardQuizViewModel @Inject constructor(
     private val _cardBlur = MutableLiveData<Dp>(15.dp)
     val cardBlur: LiveData<Dp> = _cardBlur
 
+    private val _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     init {
         loadCards()
     }
 
     private fun loadCards(){
         viewModelScope.launch {
-            _cardList.value = cardService.getGen1Cards()
             _pokemonList.value = pokemonService.getPokemon().take(151)
-            updateNames()
             _gamePokemon.value = _pokemonList.value
             pickACard()
         }
     }
 
-    private fun updateNames(){
-        val tmp = _pokemonList.value?.map {
-            Pokemon(
-                id = it.id,
-                name = _cardList.value?.get(it.id-1)?.name ?: it.name,
-                url = it.url,
-                img = it.img,
-                types = it.types
-            )
-        }
-        _pokemonList.value = tmp.orEmpty()
-    }
-
     private fun pickACard(){
-        _currentCard.value = _cardList.value?.shuffled()?.first()
-        _cardBlur.value = 15.dp
+        viewModelScope.launch {
+            _currentPokemon.value = _pokemonList.value?.shuffled()?.first()
+            _currentCard.value = cardService.getGen1Card(_currentPokemon.value?.id ?: 1)
+            _cardBlur.value = 15.dp
+            _isLoading.value = false
+        }
     }
 
     fun checkGuess(pokemon: Pokemon) {
@@ -81,7 +73,7 @@ class CardQuizViewModel @Inject constructor(
         _gamePokemon.value = _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
         // Check if game won
-        if (_currentCard.value?.name?.lowercase()?.contains(pokemon.name.lowercase()) == true){
+        if (_currentPokemon.value?.name == pokemon.name){
             _gameState.value = true
             _cardBlur.value = 0.dp
         };
@@ -89,6 +81,7 @@ class CardQuizViewModel @Inject constructor(
     }
 
     fun resetGame() {
+        _isLoading.value = true
         pickACard()
         _gamePokemon.value = _pokemonList.value
         _guessedPokemon.value = emptyList()

@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.pokequiz.R
@@ -34,18 +36,19 @@ import com.example.pokequiz.ui.components.PokemonSelector.PokemonSelector
 
 @Composable
 fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
-    val currentPokemon by viewModel.currentPokemon.observeAsState()
+    val currentCard by viewModel.currentCard.observeAsState()
     val guessedPokemon by viewModel.guessedPokemon.observeAsState()
     val gamePokemon by viewModel.gamePokemon.observeAsState()
     val gameState by viewModel.gameState.observeAsState()
     val cardBlur by viewModel.cardBlur.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState()
 
     Column(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         when{
-            currentPokemon == null -> {
+            currentCard == null -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -60,7 +63,7 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                 
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(currentPokemon?.images?.small)
+                        .data(currentCard?.images?.small)
                         .fallback(R.drawable.ic_launcher_foreground)
                         .error(R.drawable.ic_launcher_foreground)
                         .decoderFactory(SvgDecoder.Factory())
@@ -69,8 +72,16 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                     modifier = Modifier
                         .size(300.dp)
                         .blur(radiusX = cardBlur ?: 20.dp, radiusY = cardBlur ?: 20.dp),
-                    loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
-                )
+                    //loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
+                ){
+                    val state = painter.state
+                    if(state is AsyncImagePainter.State.Loading || isLoading == true){
+                        CircularProgressIndicator()
+                    }
+                    else{
+                        SubcomposeAsyncImageContent()
+                    }
+                }
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
