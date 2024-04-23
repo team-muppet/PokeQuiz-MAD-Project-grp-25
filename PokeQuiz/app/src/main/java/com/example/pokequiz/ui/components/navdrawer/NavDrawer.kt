@@ -65,12 +65,12 @@ fun NavDrawer(
                     onClick = { navAndClose(POKE_QUIZ1) }
                 )
                 NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz 2") },
+                    label = { Text(text = "Card Quiz") },
                     selected = false,
                     onClick = { navAndClose(POKE_QUIZ2) }
                 )
                 NavigationDrawerItem(
-                    label = { Text(text = "Pokémon Quiz 3") },
+                    label = { Text(text = "Silhouette Quiz") },
                     selected = false,
                     onClick = { navAndClose(POKE_QUIZ3) }
                 )

@@ -33,10 +33,12 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.pokequiz.R
 import com.example.pokequiz.ui.components.PokemonSelector.PokemonSelector
+import com.example.pokequiz.ui.components.guessList.GuessList
 
 @Composable
 fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
     val currentCard by viewModel.currentCard.observeAsState()
+    val currentPokemon by viewModel.currentPokemon.observeAsState()
     val guessedPokemon by viewModel.guessedPokemon.observeAsState()
     val gamePokemon by viewModel.gamePokemon.observeAsState()
     val gameState by viewModel.gameState.observeAsState()
@@ -60,7 +62,15 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                 Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
 
                 Spacer(modifier = Modifier.padding(5.dp))
-                
+
+                PokemonSelector(
+                    gamePokemon = gamePokemon.orEmpty(),
+                    makeGuess = { pokemon -> viewModel.checkGuess(pokemon) },
+                    showImage = true
+                )
+
+                Spacer(modifier = Modifier.padding(5.dp))
+
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(currentCard?.images?.small)
@@ -85,11 +95,6 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
-                PokemonSelector(
-                    gamePokemon = gamePokemon.orEmpty(),
-                    makeGuess = { pokemon -> viewModel.checkGuess(pokemon) }
-                )
-
                 // Play again button
                 if(gameState == true){
                     Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
@@ -101,27 +106,7 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                 Spacer(modifier = Modifier.padding(5.dp))
 
                 // Wrong guesses
-                LazyColumn {
-                    items(guessedPokemon.orEmpty().reversed()){
-                        ListItem(
-                            headlineContent = { Text(it.name.replaceFirstChar { it.titlecase() }) },
-                            leadingContent = {
-                                SubcomposeAsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data("file:///android_asset/images/${it.id}.svg")
-                                        .fallback(R.drawable.ic_launcher_foreground)
-                                        .error(R.drawable.ic_launcher_foreground)
-                                        .decoderFactory(SvgDecoder.Factory())
-                                        .build(),
-                                    contentDescription = "",
-                                    loading = { CircularProgressIndicator(modifier = Modifier.align(
-                                        Alignment.Center)) },
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                        )
-                    }
-                }
+                GuessList(guessedPokemon = guessedPokemon, currentPokemon = currentPokemon)
             }
         }
     }

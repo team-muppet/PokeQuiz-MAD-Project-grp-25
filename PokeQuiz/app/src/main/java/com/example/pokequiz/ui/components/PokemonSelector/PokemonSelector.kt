@@ -50,7 +50,7 @@ fun PokemonSelector(
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(25.dp, 0.dp)
+                .padding(10.dp, 0.dp)
             ,
             query = searchQuery,
             onQueryChange = { searchQuery = it },
@@ -58,9 +58,9 @@ fun PokemonSelector(
             onActiveChange = {active = it},
             placeholder = { Text("Select a pokemon...") },
             onSearch = {
-                active = false
-                searchQuery = ""
                 if(filteredPokemon.isNotEmpty()){
+                    active = false
+                    searchQuery = ""
                     makeGuess(filteredPokemon.first())
                 }
             },
