@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.decode.SvgDecoder
@@ -62,32 +63,43 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
-                PokemonSelector(
-                    gamePokemon = gamePokemon.orEmpty(),
-                    makeGuess = { pokemon -> viewModel.checkGuess(pokemon) }
-                )
+                Box(
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    PokemonSelector(
+                        gamePokemon = gamePokemon.orEmpty(),
+                        makeGuess = { pokemon -> viewModel.checkGuess(pokemon) },
+                        modifier = Modifier.zIndex(1f)
+                    )
 
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                // Silhouette of pokemon
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data("file:///android_asset/images/${currentPokemon?.id}.svg")
-                        .fallback(R.drawable.ic_launcher_foreground)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                    contentDescription = "Guess that pokemon!",
-                    modifier = Modifier.size(250.dp),
-                    loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
-                    colorFilter = if (gameState == null) ColorFilter.tint(Color.Black) else null
-                )
+                    Box(modifier = Modifier.padding(top = 75.dp)) {
+                        // Silhouette of pokemon
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("file:///android_asset/images/${currentPokemon?.id}.svg")
+                                .fallback(R.drawable.ic_launcher_foreground)
+                                .error(R.drawable.ic_launcher_foreground)
+                                .decoderFactory(SvgDecoder.Factory())
+                                .build(),
+                            contentDescription = "Guess that pokemon!",
+                            modifier = Modifier.size(250.dp),
+                            loading = {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(
+                                        Alignment.Center
+                                    )
+                                )
+                            },
+                            colorFilter = if (gameState == false) ColorFilter.tint(Color.Black) else null
+                        )
+                    }
+                }
                 
                 Spacer(modifier = Modifier.padding(5.dp))
 
                 // Play again button
-                gameState?.let {
-                    Text(text = it, modifier = Modifier.padding(top = 16.dp))
+                if(gameState == true){
+                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
                     Button(onClick = { viewModel.resetGame() }) {
                         Text(text = "Play again")
                     }

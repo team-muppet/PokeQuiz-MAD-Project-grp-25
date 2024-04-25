@@ -3,6 +3,8 @@ package com.example.pokequiz.ui.components.PokemonSelector
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,12 +47,13 @@ fun PokemonSelector(
     val filteredPokemon = gamePokemon.filter { it.name.contains(searchQuery, true) }
 
     Column(
-        modifier = Modifier.padding(10.dp),
+        modifier = modifier,
     ) {
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp, 0.dp)
+                .heightIn(max = 325.dp)
             ,
             query = searchQuery,
             onQueryChange = { searchQuery = it },
@@ -77,12 +80,13 @@ fun PokemonSelector(
             LazyColumn{
                 items(filteredPokemon){
                     ListItem(
-                        modifier = modifier
+                        modifier = Modifier
                             .clickable {
                                 searchQuery = ""
                                 active = false
                                 makeGuess(it)
-                            },
+                            }
+                            .height(55.dp),
                         headlineContent = { Text(text = it.name.replaceFirstChar { it.titlecase() })},
                         leadingContent = {
                             if(showImage){

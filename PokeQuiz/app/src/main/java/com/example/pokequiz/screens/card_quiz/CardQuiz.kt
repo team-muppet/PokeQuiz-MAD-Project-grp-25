@@ -1,17 +1,13 @@
 package com.example.pokequiz.screens.card_quiz
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,12 +15,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -63,33 +56,37 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
-                PokemonSelector(
-                    gamePokemon = gamePokemon.orEmpty(),
-                    makeGuess = { pokemon -> viewModel.checkGuess(pokemon) },
-                    showImage = true
-                )
-
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(currentCard?.images?.small)
-                        .fallback(R.drawable.ic_launcher_foreground)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                    contentDescription = "Guess that pokemon!",
-                    modifier = Modifier
-                        .size(300.dp)
-                        .blur(radiusX = cardBlur ?: 20.dp, radiusY = cardBlur ?: 20.dp),
-                    //loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
+                Box(
+                    contentAlignment = Alignment.TopCenter
                 ){
-                    val state = painter.state
-                    if(state is AsyncImagePainter.State.Loading || isLoading == true){
-                        CircularProgressIndicator()
-                    }
-                    else{
-                        SubcomposeAsyncImageContent()
+                    PokemonSelector(
+                        gamePokemon = gamePokemon.orEmpty(),
+                        makeGuess = { pokemon -> viewModel.checkGuess(pokemon) },
+                        showImage = true,
+                        modifier = Modifier.zIndex(1f)
+                    )
+
+                    Box(modifier = Modifier.padding(top = 85.dp)) {
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(currentCard?.images?.small)
+                                .fallback(R.drawable.ic_launcher_foreground)
+                                .error(R.drawable.ic_launcher_foreground)
+                                .decoderFactory(SvgDecoder.Factory())
+                                .build(),
+                            contentDescription = "Guess that pokemon!",
+                            modifier = Modifier
+                                .size(300.dp)
+                                .blur(radiusX = cardBlur ?: 20.dp, radiusY = cardBlur ?: 20.dp)
+                        ){
+                            val state = painter.state
+                            if(state is AsyncImagePainter.State.Loading || isLoading == true){
+                                CircularProgressIndicator()
+                            }
+                            else{
+                                SubcomposeAsyncImageContent()
+                            }
+                        }
                     }
                 }
 

@@ -24,8 +24,8 @@ import com.example.pokequiz.R
 import com.example.pokequiz.model.Pokemon
 
 @Composable
-fun GuessList(guessedPokemon: List<Pokemon>?, currentPokemon: Pokemon?){
-    LazyColumn {
+fun GuessList(modifier: Modifier = Modifier, guessedPokemon: List<Pokemon>?, currentPokemon: Pokemon?){
+    LazyColumn(modifier = modifier) {
         items(guessedPokemon.orEmpty().reversed()){
             ListItem(
                 colors = ListItemColors(
