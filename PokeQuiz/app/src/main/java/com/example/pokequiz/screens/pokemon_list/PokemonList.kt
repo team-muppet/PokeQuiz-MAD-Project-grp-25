@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -30,9 +31,11 @@ import com.example.pokequiz.R
 fun PokemonList(appState: AppState, pokemonListViewModel: PokemonListViewModel = hiltViewModel())  {
     val pokemonList = pokemonListViewModel.pokemon.observeAsState(initial = emptyList()).value
 
+    val listState = rememberLazyListState()
+
     Column {
         Text(modifier = Modifier.padding(10.dp), text = "Pokemon List:")
-        LazyColumn {
+        LazyColumn(state = listState) {
             items(pokemonList) { pokemon ->
                 ListItem(
                     modifier = Modifier
