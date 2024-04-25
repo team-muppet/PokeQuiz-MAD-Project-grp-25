@@ -1,7 +1,9 @@
 package com.example.pokequiz.screens.pokemon_list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +19,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
@@ -44,7 +48,23 @@ fun PokemonList(appState: AppState, pokemonListViewModel: PokemonListViewModel =
                         .clickable(enabled = true) {
                             appState.navigate("$POKEMON_DETAILS/${pokemon.id}")
                         },
-                    headlineContent = { Text(text = pokemon.name.replaceFirstChar { it.titlecase() })},
+                    headlineContent = { Text(pokemon.name.replaceFirstChar { it.uppercase() }, fontSize = 20.sp) },
+                    overlineContent = {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            pokemon.types.forEach { type ->
+                                val typeName = type.type.name
+                                val assetPath = "file:///android_asset/types/$typeName.svg"
+                                SubcomposeAsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(assetPath)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "${type.type.name} type",
+                                    modifier = Modifier.size(24.dp) // Adjust the size as needed
+                                )
+                            }
+                        }
+                    },
                     leadingContent = {
                         val fileName = pokemon.img?.substringAfterLast("/")?.replace("png", "webp")
                         val assetPath = "file:///android_asset/images/$fileName"
@@ -60,6 +80,7 @@ fun PokemonList(appState: AppState, pokemonListViewModel: PokemonListViewModel =
                             modifier = Modifier.size(80.dp),
                         )
                     },
+                    trailingContent = { Text(text = '#' + pokemon.id.toString(), fontSize = 16.sp) }
                 )
             }
         }
