@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokequiz.screens.card_quiz.CardQuiz
+import com.example.pokequiz.screens.details_quiz.DetailsQuiz
 import com.example.pokequiz.screens.sign_in.SignInScreen
 import com.example.pokequiz.screens.sign_up.SignUpScreen
 import com.example.pokequiz.screens.splash.SplashScreen
@@ -79,7 +80,7 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState) {
         val pokemonId = it.arguments?.getString("pokemonId") ?: "pokemonId argument missing"
         PokemonDetails(pokemonId)
     }
-    composable(POKE_QUIZ1) { Text(text = "Quiz 1") }
+    composable(POKE_QUIZ1) { DetailsQuiz() }
     composable(POKE_QUIZ2) { CardQuiz() }
     composable(POKE_QUIZ3) { SilhouetteQuiz() }
     composable(SCOREBOARD) { Scoreboard() }
