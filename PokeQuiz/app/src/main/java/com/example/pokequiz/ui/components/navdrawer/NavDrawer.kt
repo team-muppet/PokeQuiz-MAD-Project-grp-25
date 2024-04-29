@@ -26,6 +26,8 @@ import com.example.pokequiz.POKE_QUIZ1
 import com.example.pokequiz.POKE_QUIZ2
 import com.example.pokequiz.POKE_QUIZ3
 import com.example.pokequiz.SCOREBOARD
+import com.example.pokequiz.USER_PROFILE
+import com.example.pokequiz.screens.user_profile.UserProfileScreen
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Logout
 import kotlinx.coroutines.launch
@@ -78,6 +80,11 @@ fun NavDrawer(
                     label = { Text(text = "Pokémon Quiz Scoreboard") },
                     selected = false,
                     onClick = { navAndClose(SCOREBOARD); }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "User Profile") },
+                    selected = false,
+                    onClick = { navAndClose(USER_PROFILE); }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Sign out") },

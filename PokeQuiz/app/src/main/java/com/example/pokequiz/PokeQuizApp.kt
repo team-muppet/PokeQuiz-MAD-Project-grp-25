@@ -25,6 +25,7 @@ import com.example.pokequiz.screens.pokequiz_home.PokeQuizHome
 import com.example.pokequiz.screens.pokemon_details.PokemonDetails
 import com.example.pokequiz.screens.pokemon_list.PokemonList
 import com.example.pokequiz.screens.scoreboard.Scoreboard
+import com.example.pokequiz.screens.user_profile.UserProfileScreen
 import com.example.pokequiz.screens.silhoutte_quiz.SilhouetteQuiz
 import com.example.pokequiz.ui.theme.PokeQuizTheme
 
@@ -95,5 +96,9 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState) {
 
     composable(SPLASH_SCREEN) {
         SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
+    composable(USER_PROFILE) {
+        UserProfileScreen()
     }
 }
