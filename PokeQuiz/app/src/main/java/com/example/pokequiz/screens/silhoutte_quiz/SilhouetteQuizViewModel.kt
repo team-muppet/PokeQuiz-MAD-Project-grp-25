@@ -25,8 +25,8 @@ class SilhouetteQuizViewModel @Inject constructor(
     private val _currentPokemon = MutableLiveData<Pokemon?>(null)
     val currentPokemon: LiveData<Pokemon?> = _currentPokemon
 
-    private val _gameState = MutableLiveData<String?>(null)
-    val gameState: LiveData<String?> = _gameState
+    private val _gameState = MutableLiveData<Boolean>(false)
+    val gameState: LiveData<Boolean> = _gameState
 
     init {
         loadPokemon()
@@ -54,13 +54,13 @@ class SilhouetteQuizViewModel @Inject constructor(
         _gamePokemon.value = _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
         // Check if game won
-        if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) _gameState.value = "You win!"
+        if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) _gameState.value = true
     }
 
     fun resetGame() {
         shufflePokemon()
         _gamePokemon.value = _pokemonList.value
         _guessedPokemon.value = emptyList()
-        _gameState.value = null
+        _gameState.value = false
     }
 }
