@@ -60,8 +60,8 @@ data class PokeminDetails(
     val type1: String,
     val type2: String,
     val habitat: String,
-    val colors: List<String>,
+    val color: String,
     val evolutionStage: Int,
-    val height: String,
-    val weight: String
+    val height: Int,
+    val weight: Int
 )

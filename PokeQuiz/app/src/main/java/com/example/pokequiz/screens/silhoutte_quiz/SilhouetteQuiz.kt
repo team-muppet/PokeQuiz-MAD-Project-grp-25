@@ -59,7 +59,13 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
                 }
             }
             else -> {
-                Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
+                // Play again button
+                if(gameState == true){
+                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
+                    Button(onClick = { viewModel.resetGame() }) {
+                        Text(text = "Play again")
+                    }
+                }
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
@@ -92,16 +98,6 @@ fun SilhouetteQuiz(viewModel: SilhouetteQuizViewModel = hiltViewModel()){
                             },
                             colorFilter = if (gameState == false) ColorFilter.tint(Color.Black) else null
                         )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                // Play again button
-                if(gameState == true){
-                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
-                    Button(onClick = { viewModel.resetGame() }) {
-                        Text(text = "Play again")
                     }
                 }
 

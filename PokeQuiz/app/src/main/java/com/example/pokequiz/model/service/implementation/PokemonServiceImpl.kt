@@ -68,24 +68,14 @@ class PokemonServiceImpl @Inject constructor(
                 type1 = res.data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name,
                 type2 = if(res.data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes.size == 2) res.data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[1].pokemon_v2_type.name else "None",
                 habitat = res.data.pokemon_v2_pokemonhabitat[0].name,
-                colors = res.data.pokemon_v2_pokemoncolor.map { color -> color.name },
+                color = res.data.pokemon_v2_pokemoncolor[0].name,
                 evolutionStage = res.data.pokemon_v2_evolutionchain[0].pokemon_v2_pokemonspecies.indexOf(PokemonSpecies(name = res.data.pokemon_v2_pokemon[0].name)) + 1,
-                height = formatHeight(res.data.pokemon_v2_pokemon[0].height*10),
-                weight = (res.data.pokemon_v2_pokemon[0].weight/10).toString() + "kg"
+                height = (res.data.pokemon_v2_pokemon[0].height*10),
+                weight = (res.data.pokemon_v2_pokemon[0].weight/10)
             )
         }catch (e: Exception){
             // Do some error handling
             throw e
         }
     }
-
-    private fun formatHeight(heightInCm: Int): String {
-        return if (heightInCm < 100) {
-            "$heightInCm cm"
-        } else {
-            val heightInMeters = heightInCm / 100.0
-            "%.2f m".format(heightInMeters)
-        }
-    }
-
 }

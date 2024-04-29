@@ -1,5 +1,6 @@
 package com.example.pokequiz.screens.details_quiz
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,22 +41,22 @@ import com.example.pokequiz.R
 import com.example.pokequiz.model.EvolutionChain
 import com.example.pokequiz.model.PokemonSpecies
 import com.example.pokequiz.ui.components.PokemonSelector.PokemonSelector
+import com.example.pokequiz.ui.components.detailsGuessList.DetailsGuessList
 import com.example.pokequiz.ui.components.guessList.GuessList
 
 @Composable
 fun DetailsQuiz(viewModel: DetailsQuizViewModel = hiltViewModel()){
-    val currentPokemon by viewModel.currentPokemon.observeAsState()
+    val currentDetails by viewModel.currentDetails.observeAsState()
     val guessedPokemon by viewModel.guessedPokemon.observeAsState()
     val gamePokemon by viewModel.gamePokemon.observeAsState()
     val gameState by viewModel.gameState.observeAsState()
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when {
-            currentPokemon == null -> {
+            currentDetails == null -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -64,7 +65,13 @@ fun DetailsQuiz(viewModel: DetailsQuizViewModel = hiltViewModel()){
                 }
             }
             else -> {
-                Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
+                // Play again button
+                if(gameState == true){
+                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
+                    Button(onClick = { viewModel.resetGame() }) {
+                        Text(text = "Play again")
+                    }
+                }
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
@@ -79,79 +86,7 @@ fun DetailsQuiz(viewModel: DetailsQuizViewModel = hiltViewModel()){
                     )
 
                     Box(modifier = Modifier.padding(top = 75.dp)) {
-                        // Silhouette of pokemon
-                        LazyColumn {
-                            items(guessedPokemon.orEmpty().reversed()){
-                                ListItem(
-                                    headlineContent = {
-                                        Row(
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier.fillMaxWidth().horizontalScroll(scrollState)
-                                        ) {
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.type1, textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.type2, textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.habitat, textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.colors.joinToString(separator = "/"), textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.evolutionStage.toString(), textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.height, textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                            Card(modifier = Modifier.padding(4.dp).height(50.dp).width(50.dp)){
-                                                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-                                                    Text(text = it.weight, textAlign = TextAlign.Center)
-                                                }
-                                            }
-                                        }
-                                    },
-                                    leadingContent = {
-                                        SubcomposeAsyncImage(
-                                            model = ImageRequest.Builder(LocalContext.current)
-                                                .data("file:///android_asset/images/${it.id}.svg")
-                                                .fallback(R.drawable.ic_launcher_foreground)
-                                                .error(R.drawable.ic_launcher_foreground)
-                                                .decoderFactory(SvgDecoder.Factory())
-                                                .build(),
-                                            contentDescription = "",
-                                            loading = { CircularProgressIndicator(modifier = Modifier.align(
-                                                Alignment.Center)) },
-                                            modifier = Modifier.size(50.dp)
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                // Play again button
-                if(gameState == true){
-                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
-                    Button(onClick = { viewModel.resetGame() }) {
-                        Text(text = "Play again")
+                        DetailsGuessList(guessedPokemon = guessedPokemon ?: emptyList(), current = currentDetails!!)
                     }
                 }
             }

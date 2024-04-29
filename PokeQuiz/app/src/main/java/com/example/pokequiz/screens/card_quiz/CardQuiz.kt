@@ -52,7 +52,13 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                 }
             }
             else -> {
-                Text(text = "Generation 1", modifier = Modifier.align(Alignment.Start))
+                // Play again button
+                if(gameState == true){
+                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
+                    Button(onClick = { viewModel.resetGame() }) {
+                        Text(text = "Play again")
+                    }
+                }
 
                 Spacer(modifier = Modifier.padding(5.dp))
 
@@ -87,16 +93,6 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
                                 SubcomposeAsyncImageContent()
                             }
                         }
-                    }
-                }
-
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                // Play again button
-                if(gameState == true){
-                    Text(text = "You win!", modifier = Modifier.padding(top = 16.dp))
-                    Button(onClick = { viewModel.resetGame() }) {
-                        Text(text = "Play again")
                     }
                 }
 
