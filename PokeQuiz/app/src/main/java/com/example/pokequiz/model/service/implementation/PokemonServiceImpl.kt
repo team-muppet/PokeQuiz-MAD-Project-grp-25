@@ -53,7 +53,7 @@ class PokemonServiceImpl @Inject constructor(
                     name
                   }
                   pokemon_v2_evolutionchain(where: {pokemon_v2_pokemonspecies: {id: {_eq: ${pokemonId}}}}) {
-                    pokemon_v2_pokemonspecies{
+                    pokemon_v2_pokemonspecies(order_by: {id: asc}){
                     	name
                     }
                   }
