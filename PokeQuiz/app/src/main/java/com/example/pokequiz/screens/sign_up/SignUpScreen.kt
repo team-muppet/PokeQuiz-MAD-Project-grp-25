@@ -1,7 +1,6 @@
 package com.example.pokequiz.screens.sign_up
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,19 +19,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.pokequiz.R
+import com.example.pokequiz.ui.components.PokeQuizLogo
 import com.example.pokequiz.ui.theme.PokeQuizTheme
 import com.example.pokequiz.ui.theme.Purple40
 
@@ -55,13 +54,7 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.auth_image_from_firestore),
-            contentDescription = "Auth image",
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp, 4.dp)
-        )
+        PokeQuizLogo()
 
         Spacer(modifier = Modifier
             .fillMaxWidth()
@@ -144,6 +137,9 @@ fun SignUpScreen(
                 fontSize = 16.sp,
                 modifier = modifier.padding(0.dp, 6.dp)
             )
+        }
+        TextButton(onClick = { viewModel.onSignInClick(openAndPopUp) }) {
+            Text(text = "Click here to Log In!", fontSize = 16.sp)
         }
     }
 }

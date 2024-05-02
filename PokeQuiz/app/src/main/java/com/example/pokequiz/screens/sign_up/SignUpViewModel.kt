@@ -1,6 +1,7 @@
 package com.example.pokequiz.screens.sign_up
 
 import com.example.pokequiz.HOME
+import com.example.pokequiz.SIGN_IN_SCREEN
 import com.example.pokequiz.SIGN_UP_SCREEN
 import com.example.pokequiz.model.service.AccountService
 import com.example.pokequiz.screens.PokeQuizViewModel
@@ -37,5 +38,9 @@ class SignUpViewModel @Inject constructor(
             accountService.signUp(email.value, password.value)
             openAndPopUp(HOME, SIGN_UP_SCREEN)
         }
+    }
+
+    fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(SIGN_IN_SCREEN, SIGN_UP_SCREEN)
     }
 }
