@@ -24,12 +24,19 @@ class ProfileServiceImpl @Inject constructor(private val auth: AccountService,
     @OptIn(ExperimentalCoroutinesApi::class)
     override val userProfile: Flow<List<UserProfile?>>
         get() =
-            auth.currentUser.flatMapLatest { note ->
+            auth.currentUser.flatMapLatest { profile ->
                 Firebase.firestore
                     .collection(USER_PROFILES)
-                    .whereEqualTo(USER_ID_FIELD, note?.id)
+                    .whereEqualTo(USER_ID_FIELD, profile?.id)
                     .dataObjects()
             }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val allUserProfiles: Flow<List<UserProfile>>
+        get() = Firebase.firestore
+                    .collection(USER_PROFILES)
+                    .dataObjects()
+
+
     override suspend fun createProfile(userprofile: UserProfile) {
         val profileWithUserId = userprofile.copy(userId = auth.currentUserId)
         Firebase.firestore

@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileService {
     val userProfile: Flow<List<UserProfile?>>
+
+    val allUserProfiles: Flow<List<UserProfile>>
     suspend fun createProfile(userprofile: UserProfile)
     suspend fun readProfile(profileId: String): UserProfile?
     suspend fun updateProfile(profile: UserProfile)
