@@ -1,4 +1,5 @@
 [versions]
+activityKtx = "1.9.0"
 agp = "8.3.2"
 coilCompose = "2.6.0"
 converterGson = "2.9.0"
@@ -31,7 +32,9 @@ runtimeLivedata = "1.6.7"
 serilization = "1.9.23"
 tablerIcons = "1.1.0"
 
+
 [libraries]
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-core-view = { module = "androidx.core:core-view", version.ref = "coreView" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

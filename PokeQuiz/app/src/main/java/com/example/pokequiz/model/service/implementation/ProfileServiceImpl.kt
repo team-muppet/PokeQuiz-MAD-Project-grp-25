@@ -9,9 +9,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
 import com.google.firebase.firestore.toObject
 import com.google.firebase.Firebase
 import kotlinx.coroutines.flow.flatMapLatest
+import android.net.Uri
+import java.io.File
+import java.util.UUID
 
 
 import kotlinx.coroutines.flow.Flow
@@ -61,6 +65,31 @@ class ProfileServiceImpl @Inject constructor(private val auth: AccountService,
             .collection(USER_PROFILES)
             .document(profileId).delete().await()
     }
+
+    override suspend fun uploadProfilePicture(profilePicture: String) {
+        try {
+            // Convert the profile picture string URI to a Uri object
+            val uri = Uri.parse(profilePicture)
+
+            // Create a storage reference from our app
+            val storage = Firebase.storage
+            val storageRef = storage.reference
+
+            // Create a reference to "profilePictures" folder and a unique filename
+            val profilePicsRef = storageRef.child("public/${UUID.randomUUID()}.jpg")
+
+            // Upload the profile picture to Firestore Storage
+            profilePicsRef.putFile(uri).await()
+
+            // Log success message or any further processing
+            println("Profile picture uploaded successfully.")
+        } catch (e: Exception) {
+            // Handle any errors that occur during the upload process
+            println("Error uploading profile picture: ${e.message}")
+        }
+    }
+
+
 
 
     companion object {
