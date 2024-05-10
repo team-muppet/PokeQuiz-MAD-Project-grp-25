@@ -19,6 +19,8 @@ import java.util.UUID
 
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 
@@ -39,7 +41,17 @@ class ProfileServiceImpl @Inject constructor(private val auth: AccountService,
         get() = Firebase.firestore
                     .collection(USER_PROFILES)
                     .dataObjects()
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val currentProfile: Flow<UserProfile>
+        get() = auth.currentUser.flatMapLatest { profile ->
+            Firebase.firestore
+                .collection(USER_PROFILES)
+                .whereEqualTo(USER_ID_FIELD, profile?.id)
+                .dataObjects<UserProfile>()
+                .map { profiles ->
+                    profiles.firstOrNull() ?: UserProfile() // Assuming there's only one matching profile
+                }
+        }
 
     override suspend fun createProfile(userprofile: UserProfile) {
         val profileWithUserId = userprofile.copy(userId = auth.currentUserId)
@@ -88,7 +100,6 @@ class ProfileServiceImpl @Inject constructor(private val auth: AccountService,
             println("Error uploading profile picture: ${e.message}")
         }
     }
-
 
 
 

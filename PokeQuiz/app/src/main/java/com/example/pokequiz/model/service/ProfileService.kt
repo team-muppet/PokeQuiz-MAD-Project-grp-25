@@ -8,6 +8,8 @@ interface ProfileService {
     val userProfile: Flow<List<UserProfile?>>
 
     val allUserProfiles: Flow<List<UserProfile>>
+
+    val currentProfile: Flow<UserProfile>
     suspend fun createProfile(userprofile: UserProfile)
     suspend fun readProfile(profileId: String): UserProfile?
     suspend fun updateProfile(profile: UserProfile)
@@ -15,11 +17,6 @@ interface ProfileService {
 
     suspend fun uploadProfilePicture(profilePicture: String)
 
-    suspend fun addProfilePicture(profilePicture: String)
-
-    suspend fun changeProfilePicture(profilePicture: String)
-
-    suspend fun showProfilePictures()
 
 
 }
