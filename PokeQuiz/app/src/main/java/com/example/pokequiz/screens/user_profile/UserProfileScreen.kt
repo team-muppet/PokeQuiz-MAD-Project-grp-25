@@ -9,8 +9,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 
@@ -61,41 +65,43 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
     }
 
 
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
-        // Handle the selected image URI here
-        uri?.let {
-            if (!isUploading.value) { // Check if upload is not already in progress
-                isUploading.value = true // Set flag to indicate upload is in progress
-                // Start a coroutine to call suspend function
-                scope.launch {
-                    // Call the suspend function within the coroutine context
-                    viewModel.uploadPic(uri.toString())
-                    val debug = uri.toString()
-                    println("upload URI: $debug")
-                    isUploading.value = false // Reset flag after upload is completed
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+            // Handle the selected image URI here
+            uri?.let {
+                if (!isUploading.value) { // Check if upload is not already in progress
+                    isUploading.value = true // Set flag to indicate upload is in progress
+                    // Start a coroutine to call suspend function
+                    scope.launch {
+                        // Call the suspend function within the coroutine context
+                        viewModel.uploadPic(uri.toString())
+                        val debug = uri.toString()
+                        println("upload URI: $debug")
+                        isUploading.value = false // Reset flag after upload is completed
+                    }
                 }
             }
         }
-    }
 
 
     val context = LocalContext.current
 
     // Define a requestPermessionLauncher using the RequestPermission contract
-    val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        // Check if the permission is granted
-        if (isGranted) {
-            // Show a toast message for permission granted
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            // Check if the permission is granted
+            if (isGranted) {
+                // Show a toast message for permission granted
 // get image from android device
-            launcher.launch("image/*")
+                launcher.launch("image/*")
 
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_LONG).show()
-        } else {
-            // Show a toast message asking the user to grant the permission
-            Toast.makeText(context, "Please grant permission", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Permission Granted", Toast.LENGTH_LONG).show()
+            } else {
+                // Show a toast message asking the user to grant the permission
+                Toast.makeText(context, "Please grant permission", Toast.LENGTH_LONG).show()
+            }
         }
-    }
-
+    var isDialogOpen = remember { mutableStateOf(false) }
 
     Column(
     ) {
@@ -105,10 +111,8 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
                 .clickable {
                     if (!isUploading.value) {
                         // Launch image picker when not already uploading
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            launcher.launch("image/*")
-                        } else {
-                            launcher.launch("image/*")
+                        if (profile.value.isNotEmpty()) {
+                            isDialogOpen.value = true
                         }
                     }
                 }
@@ -122,13 +126,15 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
             )
         }
 
-        Button(onClick = { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Use the requestPermessionLauncher to request the READ_MEDIA_IMAGES permission
-            requestPermissionLauncher.launch(READ_MEDIA_IMAGES)
-        } else {
-            // For older Android versions, use READ_EXTERNAL_STORAGE permission
-            requestPermissionLauncher.launch(READ_EXTERNAL_STORAGE)
-        } }) {
+        Button(onClick = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Use the requestPermessionLauncher to request the READ_MEDIA_IMAGES permission
+                requestPermissionLauncher.launch(READ_MEDIA_IMAGES)
+            } else {
+                // For older Android versions, use READ_EXTERNAL_STORAGE permission
+                requestPermissionLauncher.launch(READ_EXTERNAL_STORAGE)
+            }
+        }) {
             Text("Pick Photo")
         }
 
@@ -143,6 +149,57 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
 
         // Similarly, you can add fields for other properties of UserProfile
     }
+
+    if (isDialogOpen.value) {
+        Dialog(
+            onDismissRequest = { isDialogOpen.value = false }
+        ) {
+            Surface(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Column {
+                    Text("Choose Profile Image")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LazyColumn {
+                        items(profile.value.getOrNull(0)?.oldPictures ?: emptyList()) { imageUrl ->
+                            // Use remember to avoid recomposition issues
+                            val oldImageUrl = remember { mutableStateOf("") }
+                            val oldPicStorageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
+
+                            // Fetch download URL asynchronously
+                            oldPicStorageReference.downloadUrl
+                                .addOnSuccessListener { uri ->
+                                    oldImageUrl.value = uri.toString()
+                                }
+                                .addOnFailureListener { exception ->
+                                    println("Error fetching download URL: ${exception.message}")
+                                }
+
+                            // Display the image
+                            if (oldImageUrl.value.isNotEmpty()) {
+                                AsyncImage(
+                                    model = oldImageUrl.value,
+                                    contentDescription = "OldProfileImage",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp) // Adjust the height as needed
+                                        .clickable {
+                                            scope.launch {
+                                                // Update the profileImg value with the selected image URL
+                                                viewModel.changeProfilePicture(imageUrl)
+                                                // Close the dialog
+                                            }
+                                            isDialogOpen.value = false
+                                        }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 

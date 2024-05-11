@@ -53,10 +53,10 @@ class UserProfileViewModel @Inject constructor(
 
 
     suspend fun changeProfilePicture(profilePicture: String) {
-        currentUserProfile.collect { profile ->
-            val updatedProfile = profile.copy(profileImg = profilePicture)
-            profileService.updateProfile(updatedProfile)
-        }
+        val profile = currentUserProfile.first() // Collect the current profile once
+        println("LOPING IN COLLECT")
+        val updatedProfile = profile.copy(profileImg = profilePicture)
+        profileService.updateProfile(updatedProfile)
 
     }
 
