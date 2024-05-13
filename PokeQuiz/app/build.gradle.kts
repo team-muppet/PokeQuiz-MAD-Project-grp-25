@@ -56,6 +56,9 @@ android {
 
 dependencies {
     //Hilt
+    implementation (libs.firebase.ui.storage)
+    implementation(libs.glide)
+    annotationProcessor (libs.glide.compiler)
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.fragment.ktx)

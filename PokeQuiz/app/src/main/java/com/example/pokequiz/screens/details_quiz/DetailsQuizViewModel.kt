@@ -39,6 +39,7 @@ class DetailsQuizViewModel @Inject constructor(
 
 
     init {
+        println("Calling init for details viewmodel")
         loadPokemon()
     }
 
