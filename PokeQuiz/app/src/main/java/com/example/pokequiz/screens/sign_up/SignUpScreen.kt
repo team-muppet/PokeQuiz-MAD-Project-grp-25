@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
@@ -43,6 +44,7 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val email = viewModel.email.collectAsState()
+    val username = viewModel.username.collectAsState()
     val password = viewModel.password.collectAsState()
     val confirmPassword = viewModel.confirmPassword.collectAsState()
 
@@ -59,6 +61,26 @@ fun SignUpScreen(
         Spacer(modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp))
+
+        OutlinedTextField(
+            singleLine = true,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp, 4.dp)
+                .border(
+                    BorderStroke(width = 2.dp, color = Purple40),
+                    shape = RoundedCornerShape(50)
+                ),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            value = username.value,
+            onValueChange = { viewModel.updateUsername(it) },
+            placeholder = { Text("Username") },
+            leadingIcon = { Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Username") }
+        )
 
         OutlinedTextField(
             singleLine = true,

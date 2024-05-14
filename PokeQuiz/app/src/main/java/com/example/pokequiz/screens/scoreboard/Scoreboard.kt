@@ -1,13 +1,8 @@
 package com.example.pokequiz.screens.scoreboard
 
-import android.media.Image
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -19,86 +14,93 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.pokequiz.model.UserProfile
-import com.example.pokequiz.screens.scoreboard.ScoreboardViewModel
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
-import com.google.firebase.Firebase
-import com.google.firebase.storage.storage
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.Color
+import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun Scoreboard(viewModel: ScoreboardViewModel = hiltViewModel()) {
-    val allProfiles by viewModel.allProfiles.collectAsState(initial = emptyList())
-
-    val sortedProfiles = allProfiles.sortedByDescending { calculateScore(it) }
+    val allProfiles by viewModel.allProfiles.collectAsState()
 
     val listState = rememberLazyListState()
 
     LazyColumn(state = listState) {
-        items(sortedProfiles) { userProfile ->
-            UserProfileItem(userProfile = userProfile)
+        itemsIndexed(allProfiles) { index, userProfile ->
+            val score = viewModel.calculateScore(userProfile)
+            UserProfileItem(rank = index + 1, userProfile = userProfile, score = score)
         }
     }
 }
 
 @Composable
-fun UserProfileItem(userProfile: UserProfile, modifier: Modifier = Modifier,) {
-    //val downloadUrl = remember { mutableStateOf("") }
-    //val imageUrl = remember { mutableStateOf("") }
-    val imageUrl = userProfile.profileImg
-    println("Download URL: $imageUrl")
-    val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
-    val downloadUrl = remember { mutableStateOf("") }
+fun UserProfileItem(rank: Int, userProfile: UserProfile, score: Int, modifier: Modifier = Modifier) {
+    var downloadUrl = remember { mutableStateOf("") }
 
-    storageReference.downloadUrl.addOnSuccessListener { uri ->
-        downloadUrl.value = uri.toString()
-        // Use the download URL to access the file
-        println("Download URL: $downloadUrl")
-    }.addOnFailureListener { exception ->
-        // Handle any errors that occur while generating the download URL
-        println("Error generating download URL: ${exception.message}")
-    }
-
-    println("Download URL: $downloadUrl")
-    // Generate the download URL for the file
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-    ) {
-        // Display profile image
-        AsyncImage(
-            model = downloadUrl.value,
-            contentDescription = "Mpuuetman",
-            modifier = Modifier
-                 // Adjust the height as needed)
-              )
-
-        //Spacer(modifier = Modifier.width(16.dp))
-
-        // Display username and score
-        Column {
-            Text(text = userProfile.username, fontWeight = FontWeight.Bold)
-            Text(text = "Score: ${calculateScore(userProfile)}")
+    // Download the image URL from Firebase Storage
+    LaunchedEffect(userProfile.profileImg) {
+        val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(userProfile.profileImg)
+        storageReference.downloadUrl.addOnSuccessListener { uri ->
+            downloadUrl.value = uri.toString()
+        }.addOnFailureListener { exception ->
+            Log.e("UserProfileItem", "Error generating download URL: ${exception.message}")
         }
     }
-}
 
-// Calculate the score based on gamesPlayed and totalGuesses
-private fun calculateScore(userProfile: UserProfile): Float {
-    return if (userProfile.totalGuesses != 0) {
-        userProfile.gamesPlayed.toFloat() / userProfile.totalGuesses.toFloat()
-    } else {
-        0f
+    Card(
+        modifier = Modifier
+            .padding(2.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Yellow,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(4.dp)
+        ) {
+            // Display profile image with fixed size
+            AsyncImage(
+                model = downloadUrl.value,
+                contentDescription = "Profile Image",
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(end = 4.dp)
+            )
+
+            // Display username and score inside columns with boxes
+            Column {
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 2.dp)
+                        .fillMaxWidth()
+                        .background(Color.Blue)
+                        .padding(2.dp)
+                ) {
+                    Text(text = "$rank. ${userProfile.username}", fontWeight = FontWeight.Bold, color = Color.White)
+                }
+                Box(
+                    modifier = Modifier
+                        .background(Color.Blue)
+                        .padding(2.dp)
+                ) {
+                    Row {
+                        Text(text = "Score: ", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(text = "$score", color = Color.White)
+                    }
+                }
+            }
+        }
     }
 }
