@@ -29,7 +29,7 @@ fun PokeQuizHome(){
             )
             Image(
                 painter = painterResource(id = R.drawable.pokequiz),
-                contentDescription = "League Of Data icon",
+                contentDescription = "PokeQuiz Icon",
                 modifier = Modifier
                     .width(300.dp)
                     .height(300.dp)

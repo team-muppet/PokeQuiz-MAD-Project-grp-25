@@ -57,11 +57,20 @@ data class PokemonSpecies(
 data class PokeminDetails(
     val name: String,
     val id: Int,
+    val types: List<String>,
     val type1: String,
     val type2: String,
     val habitat: String,
     val color: String,
+    val evolutionChain: List<Pokemin>,
     val evolutionStage: Int,
     val height: Int,
-    val weight: Int
+    val weight: Int,
+    val cry: String?,
+    val sprites: List<String>,
+)
+
+data class Pokemin(
+    val id: Int,
+    val name: String,
 )

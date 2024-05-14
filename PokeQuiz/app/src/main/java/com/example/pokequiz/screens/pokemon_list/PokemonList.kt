@@ -77,8 +77,8 @@ fun PokemonList(appState: AppState, pokemonListViewModel: PokemonListViewModel =
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(assetPath)
-                                .fallback(R.drawable.ic_launcher_foreground)
-                                .error(R.drawable.ic_launcher_foreground)
+                                .fallback(R.drawable.pokequiz)
+                                .error(R.drawable.pokequiz)
                                 .decoderFactory(SvgDecoder.Factory())
                                 .build(),
                             contentDescription = "Image of ${pokemon.name}",

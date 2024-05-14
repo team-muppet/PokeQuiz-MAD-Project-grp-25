@@ -6,4 +6,6 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.kapt) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.serilization) apply false
+    alias(libs.plugins.apollo) apply false
 }
+

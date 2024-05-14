@@ -1,0 +1,31 @@
+query DetailsQuery($pokemonId: Int!) {
+  pokemon_v2_pokemon(where: {id: {_eq: $pokemonId}}) {
+    id
+    name
+    height
+    weight
+    pokemon_v2_pokemontypes {
+      pokemon_v2_type {
+        name
+      }
+    }
+  }
+  pokemon_v2_pokemonhabitat(where: {pokemon_v2_pokemonspecies: {id: {_eq: $pokemonId}}}) {
+    name
+  }
+  pokemon_v2_pokemoncolor(where: {pokemon_v2_pokemonspecies: {id: {_eq: $pokemonId}}}) {
+    name
+  }
+  pokemon_v2_evolutionchain(where: {pokemon_v2_pokemonspecies: {id: {_eq: $pokemonId}}}) {
+    pokemon_v2_pokemonspecies(order_by: {order: asc}) {
+      id
+      name
+    }
+  }
+  pokemon_v2_pokemoncries(where: {pokemon_v2_pokemon: {id: {_eq: $pokemonId}}}) {
+    cries
+  }
+  pokemon_v2_pokemonsprites(where: {id: {_eq: $pokemonId}}) {
+    sprites
+  }
+}

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.serilization)
+    alias(libs.plugins.apollo)
 }
 
 android {
@@ -54,18 +55,28 @@ android {
     }
 }
 
+apollo {
+    service("service") {
+        packageName.set("com.example.pokequiz")
+    }
+}
+
 dependencies {
-    //Hilt
+    // Firebase
     implementation (libs.firebase.ui.storage)
     implementation(libs.glide)
     annotationProcessor (libs.glide.compiler)
 
+    //Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     kapt(libs.hilt.compiler)
+
+    //Apollo
+    implementation(libs.apollo.runtime)
 
     //Coil
     implementation(libs.coil.compose)

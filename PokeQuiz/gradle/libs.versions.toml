@@ -1,6 +1,7 @@
 [versions]
 activityKtx = "1.9.0"
-agp = "8.3.2"
+agp = "8.4.0"
+apolloRuntime = "3.8.4"
 coilCompose = "2.6.0"
 compilerVersion = "4.11.0"
 converterGson = "2.9.0"
@@ -26,8 +27,8 @@ material = "1.6.7"
 materialVersion = "1.6.6"
 navigationCompose = "2.7.7"
 googlegmsservices = "4.4.1"
-googlefirebase = "32.8.1"
-googleplayserviceauth = "21.1.0"
+googlefirebase = "33.0.0"
+googleplayserviceauth = "21.1.1"
 org-jetbrains-kotlin-android = "1.8.0"
 retrofit = "2.9.0"
 runtimeLivedata = "1.6.7"
@@ -37,6 +38,7 @@ glide = "4.14.2"
 
 
 [libraries]
+apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apolloRuntime" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-core-view = { module = "androidx.core:core-view", version.ref = "coreView" }
@@ -86,3 +88,4 @@ googleGmsServices = { id = "com.google.gms.google-services", version.ref = "goog
 org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "org-jetbrains-kotlin-android" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 serilization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serilization" }
+apollo = { id = "com.apollographql.apollo3", version.ref = "apolloRuntime" }

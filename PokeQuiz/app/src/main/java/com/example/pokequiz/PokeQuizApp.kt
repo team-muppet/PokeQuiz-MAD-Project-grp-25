@@ -78,7 +78,7 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState) {
     composable(POKEMON_LIST) { PokemonList(appState = appState) }
     composable("$POKEMON_DETAILS$DETAILS_ARG") {
         val pokemonId = it.arguments?.getString("pokemonId") ?: "pokemonId argument missing"
-        PokemonDetails(pokemonId)
+        PokemonDetails(appState = appState, pokemonId)
     }
     composable(POKE_QUIZ1) { DetailsQuiz(navController = appState.navController) }
     composable(POKE_QUIZ2) { CardQuiz(navController = appState.navController) }
