@@ -5,6 +5,7 @@ import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -46,7 +48,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
+fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel(), navController: NavHostController) {
     val isUploading by viewModel.isUploadingProfilePicture.collectAsState()
     val userProfile by viewModel.userProfile.collectAsState()
     val context = LocalContext.current
@@ -58,6 +60,13 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel()) {
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             viewModel.uploadProfilePicture(it)
+        }
+    }
+
+    BackHandler {
+        navController.navigate("home") {
+            popUpTo("home") { inclusive = true }
+            launchSingleTop = true
         }
     }
 

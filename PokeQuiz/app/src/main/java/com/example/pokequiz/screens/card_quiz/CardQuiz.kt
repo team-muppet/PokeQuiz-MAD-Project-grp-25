@@ -1,5 +1,6 @@
 package com.example.pokequiz.screens.card_quiz
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -29,7 +31,7 @@ import com.example.pokequiz.ui.components.PokemonSelector.PokemonSelector
 import com.example.pokequiz.ui.components.guessList.GuessList
 
 @Composable
-fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
+fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel(), navController: NavHostController){
     val currentCard by viewModel.currentCard.observeAsState()
     val currentPokemon by viewModel.currentPokemon.observeAsState()
     val guessedPokemon by viewModel.guessedPokemon.observeAsState()
@@ -37,6 +39,14 @@ fun CardQuiz(viewModel: CardQuizViewModel = hiltViewModel()){
     val gameState by viewModel.gameState.observeAsState()
     val cardBlur by viewModel.cardBlur.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState()
+
+    // Handle back button press
+    BackHandler {
+        navController.navigate("home") {
+            popUpTo("home") { inclusive = true }
+            launchSingleTop = true
+        }
+    }
 
     Column(
         modifier = Modifier.padding(10.dp),

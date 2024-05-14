@@ -4,15 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokequiz.model.service.PokemonService
 import com.example.pokequiz.model.Pokemon
+import com.example.pokequiz.model.service.PokemonService
+import com.example.pokequiz.model.service.ProfileService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SilhouetteQuizViewModel @Inject constructor(
-    private val pokemonService: PokemonService
+    private val pokemonService: PokemonService,
+    private val profileService: ProfileService
 ) : ViewModel() {
     private val _pokemonList = MutableLiveData<List<Pokemon>>(listOf())
 
@@ -28,6 +31,7 @@ class SilhouetteQuizViewModel @Inject constructor(
     private val _gameState = MutableLiveData<Boolean>(false)
     val gameState: LiveData<Boolean> = _gameState
 
+    private val _currentUser = profileService.currentProfile
     init {
         loadPokemon()
     }
@@ -45,16 +49,34 @@ class SilhouetteQuizViewModel @Inject constructor(
     }
 
     fun checkGuess(pokemon: Pokemon) {
-        // Add pokemon to guessed list
-        val tmp = _guessedPokemon.value.orEmpty().toMutableList()
-        tmp.add(pokemon)
-        _guessedPokemon.value = tmp
+        viewModelScope.launch {
+            // Add pokemon to guessed list
+            val tmp = _guessedPokemon.value.orEmpty().toMutableList()
+            tmp.add(pokemon)
+            _guessedPokemon.value = tmp
 
-        // Update _gamePokemon
-        _gamePokemon.value = _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
+            // Update _gamePokemon
+            _gamePokemon.value =
+                _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
-        // Check if game won
-        if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) _gameState.value = true
+            // Check if game won
+            if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) {
+                _gameState.value = true
+                updateProfileWithGame(tmp.size)
+            }
+        }
+    }
+
+
+    private suspend fun updateProfileWithGame(guesses: Int)
+    {
+        val profile = _currentUser.first() // Collect the current profile once
+        println("LOPING IN COLLECT")
+        val updatedProfile = profile.copy(
+            totalGuesses = (profile.totalGuesses + guesses),
+            gamesPlayed = (profile.gamesPlayed + 1)
+        )
+        profileService.updateProfile(updatedProfile)
     }
 
     fun resetGame() {

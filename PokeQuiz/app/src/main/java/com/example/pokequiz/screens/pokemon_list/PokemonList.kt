@@ -1,5 +1,6 @@
 package com.example.pokequiz.screens.pokemon_list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,15 +12,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +34,13 @@ fun PokemonList(appState: AppState, pokemonListViewModel: PokemonListViewModel =
     val pokemonList = pokemonListViewModel.pokemon.observeAsState(initial = emptyList()).value
 
     val listState = rememberLazyListState()
+
+    BackHandler {
+        appState.navController.navigate("home") {
+            popUpTo("home") { inclusive = true }
+            launchSingleTop = true
+        }
+    }
 
     Column {
         Text(modifier = Modifier.padding(10.dp), text = "Pokemon List:")

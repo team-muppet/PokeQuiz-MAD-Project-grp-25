@@ -16,16 +16,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokequiz.screens.card_quiz.CardQuiz
 import com.example.pokequiz.screens.details_quiz.DetailsQuiz
-import com.example.pokequiz.screens.sign_in.SignInScreen
-import com.example.pokequiz.screens.sign_up.SignUpScreen
-import com.example.pokequiz.screens.splash.SplashScreen
-import com.example.pokequiz.ui.components.navdrawer.NavDrawer
-import com.example.pokequiz.screens.pokequiz_home.PokeQuizHome
 import com.example.pokequiz.screens.pokemon_details.PokemonDetails
 import com.example.pokequiz.screens.pokemon_list.PokemonList
+import com.example.pokequiz.screens.pokequiz_home.PokeQuizHome
 import com.example.pokequiz.screens.scoreboard.Scoreboard
-import com.example.pokequiz.screens.user_profile.UserProfileScreen
+import com.example.pokequiz.screens.sign_in.SignInScreen
+import com.example.pokequiz.screens.sign_up.SignUpScreen
 import com.example.pokequiz.screens.silhoutte_quiz.SilhouetteQuiz
+import com.example.pokequiz.screens.splash.SplashScreen
+import com.example.pokequiz.screens.user_profile.UserProfileScreen
+import com.example.pokequiz.ui.components.navdrawer.NavDrawer
 import com.example.pokequiz.ui.theme.PokeQuizTheme
 
 @Composable
@@ -80,10 +80,10 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState) {
         val pokemonId = it.arguments?.getString("pokemonId") ?: "pokemonId argument missing"
         PokemonDetails(pokemonId)
     }
-    composable(POKE_QUIZ1) { DetailsQuiz() }
-    composable(POKE_QUIZ2) { CardQuiz() }
-    composable(POKE_QUIZ3) { SilhouetteQuiz() }
-    composable(SCOREBOARD) { Scoreboard() }
+    composable(POKE_QUIZ1) { DetailsQuiz(navController = appState.navController) }
+    composable(POKE_QUIZ2) { CardQuiz(navController = appState.navController) }
+    composable(POKE_QUIZ3) { SilhouetteQuiz(navController = appState.navController) }
+    composable(SCOREBOARD) { Scoreboard(navController = appState.navController) }
 
     composable(SIGN_IN_SCREEN) {
         SignInScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
@@ -98,6 +98,6 @@ fun NavGraphBuilder.pokeQuizGraph(appState: AppState) {
     }
 
     composable(USER_PROFILE) {
-        UserProfileScreen()
+        UserProfileScreen(navController = appState.navController)
     }
 }

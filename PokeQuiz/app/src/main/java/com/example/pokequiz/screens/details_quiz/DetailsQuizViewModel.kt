@@ -3,10 +3,9 @@ package com.example.pokequiz.screens.details_quiz
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.example.pokequiz.model.Pokemon
 import com.example.pokequiz.model.PokeminDetails
+import com.example.pokequiz.model.Pokemon
 import com.example.pokequiz.model.service.PokemonService
 import com.example.pokequiz.model.service.ProfileService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +38,6 @@ class DetailsQuizViewModel @Inject constructor(
 
 
     init {
-        println("Calling init for details viewmodel")
         loadPokemon()
     }
 
@@ -81,7 +79,6 @@ class DetailsQuizViewModel @Inject constructor(
     private suspend fun updateProfileWithGame(guesses: Int)
     {
         val profile = _currentUser.first() // Collect the current profile once
-        println("LOPING IN COLLECT")
         val updatedProfile = profile.copy(
             totalGuesses = (profile.totalGuesses + guesses),
             gamesPlayed = (profile.gamesPlayed + 1)

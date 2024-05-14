@@ -70,8 +70,8 @@ class UserProfileViewModel @Inject constructor(
 
                     val downloadUri = profilePicsRef.downloadUrl.await().toString()
                     val updatedProfile = _userProfile.value?.copy(
-                        profileImg = downloadUri,
-                        oldPictures = _userProfile.value?.oldPictures.orEmpty() + downloadUri
+                        profileImg = profilePicsRef.toString(),
+                        oldPictures = _userProfile.value?.oldPictures.orEmpty() + profilePicsRef.toString()
                     )
                     if (updatedProfile != null) {
                         profileService.updateProfile(updatedProfile)
