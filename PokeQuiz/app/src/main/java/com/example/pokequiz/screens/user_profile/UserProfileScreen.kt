@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -25,7 +23,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,10 +39,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.pokequiz.ui.components.UserProfileDialog
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.launch
@@ -177,41 +174,6 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = hiltViewModel(), navCont
     }
 
     if (isDialogOpen.value) {
-        Dialog(onDismissRequest = { isDialogOpen.value = false }) {
-            Surface(modifier = Modifier.padding(16.dp)) {
-                Column {
-                    Text("Choose Profile Image")
-                    Spacer(modifier = Modifier.height(16.dp))
-                    LazyColumn {
-                        items(userProfile?.oldPictures.orEmpty()) { imageUrl ->
-                            var oldImageUrl by remember { mutableStateOf<String?>(null) }
-                            LaunchedEffect(imageUrl) {
-                                scope.launch {
-                                    val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
-                                    oldImageUrl = viewModel.getDownloadUrl(storageReference)
-                                }
-                            }
-                            oldImageUrl?.let { url ->
-                                AsyncImage(
-                                    model = url,
-                                    contentDescription = "OldProfileImage",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(200.dp)
-                                        .clickable {
-                                            viewModel.changeProfilePicture(imageUrl)
-                                            currentImageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
-                                            scope.launch {
-                                                currentImageUrl = viewModel.getDownloadUrl(currentImageReference!!) ?: ""
-                                            }
-                                            isDialogOpen.value = false
-                                        }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        UserProfileDialog(userProfile, viewModel, scope, isDialogOpen)
     }
 }
