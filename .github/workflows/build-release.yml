@@ -1,0 +1,77 @@
+name: Build & Release PokéQuiz APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x PokeQuiz/gradlew
+
+      - name: Build Release APK
+        working-directory: ./PokeQuiz
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release-artifacts
+          cp PokeQuiz/app/build/outputs/apk/release/app-release.apk release-artifacts/PokeQuiz-v1.0.${{ github.run_number }}.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PokeQuiz-v1.0.${{ github.run_number }}-APK
+          path: release-artifacts/PokeQuiz-v1.0.${{ github.run_number }}.apk
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: PokéQuiz v1.0.${{ github.run_number }}
+          body: |
+            ## PokéQuiz Mobile App - Release v1.0.${{ github.run_number }}
+
+            ### 📱 Download & Install:
+            1. Download **PokeQuiz-v1.0.${{ github.run_number }}.apk** below to your Android device.
+            2. Tap the downloaded file to install.
+            *(If prompted by Android, allow "Install unknown apps" for your browser or file manager).*
+
+            ---
+
+            ### ✨ What's in this release:
+            - **Completely Self-Contained**: Removed all Firebase and external cloud authentication dependencies.
+            - **No Sign-In Required**: Open the app and start playing quizzes right away.
+            - **Local Profile & Scoreboard**: Your username, profile photos, and quiz accuracy are stored locally on your device with classic Pokémon trainer rivals on the scoreboard.
+            - **Quizzes Included**:
+              - 🎯 **Silhouette Quiz**: Identify Pokémon by their silhouette.
+              - 🃏 **Card Quiz**: Identify cards as they progressively unblur.
+              - 🔍 **Details Quiz**: Guess Pokémon from their stats and characteristics.
+              - 📖 **Pokédex**: Explore Pokémon details, cries, sprites, and evolutions.
+            - **Signed APK**: Automatically built and signed for easy side-loading on Android devices.
+          files: release-artifacts/PokeQuiz-v1.0.${{ github.run_number }}.apk
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

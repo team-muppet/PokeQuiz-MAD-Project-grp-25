@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.googleGmsServices)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.serilization)
@@ -36,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -62,11 +61,6 @@ apollo {
 }
 
 dependencies {
-    // Firebase
-    implementation (libs.firebase.ui.storage)
-    implementation(libs.glide)
-    annotationProcessor (libs.glide.compiler)
-
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.fragment.ktx)
@@ -83,8 +77,8 @@ dependencies {
     implementation(libs.coil.svg)
 
     //Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     //Json
     implementation(libs.kotlinx.serialization.json)
@@ -93,15 +87,10 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     //Icons https://github.com/DevSrSouza/compose-icons
-    implementation(libs.font.awesome) // https://github.com/DevSrSouza/compose-icons/blob/master/font-awesome/DOCUMENTATION.md
-    implementation(libs.icons.tabler.icons) // https://github.com/DevSrSouza/compose-icons/blob/master/tabler-icons/DOCUMENTATION.md
+    implementation(libs.font.awesome)
+    implementation(libs.icons.tabler.icons)
 
     implementation(libs.androidx.navigation.compose)
-    implementation(platform(libs.google.firebase.bom))
-    implementation(libs.google.firebase.firestore)
-    implementation(libs.google.firebase.auth)
-    implementation(libs.google.firebase.storage)
-    implementation(libs.google.android.gms.play.services)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -111,6 +100,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

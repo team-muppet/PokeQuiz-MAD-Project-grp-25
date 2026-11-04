@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsQuizViewModel @Inject constructor(
-    private val pokemonService: PokemonService, private val profileService: ProfileService
+    private val pokemonService: PokemonService,
+    private val profileService: ProfileService
 ) : ViewModel() {
     private val _pokemonList = MutableLiveData<List<Pokemon>>(listOf())
 
@@ -36,7 +37,6 @@ class DetailsQuizViewModel @Inject constructor(
 
     private val _currentUser = profileService.currentProfile
 
-
     init {
         loadPokemon()
     }
@@ -51,39 +51,52 @@ class DetailsQuizViewModel @Inject constructor(
 
     private fun shufflePokemon() {
         viewModelScope.launch {
-            _currentPokemon.value = _pokemonList.value?.shuffled()?.first()
-            _currentDetails.value = pokemonService.getPokemonDetails(_currentPokemon.value!!.id)
+            try {
+                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(1, "bulbasaur")
+                _currentPokemon.value = candidate
+                _currentDetails.value = pokemonService.getPokemonDetails(candidate.id)
+            } catch (e: Exception) {
+                try {
+                    _currentPokemon.value = Pokemon(1, "bulbasaur")
+                    _currentDetails.value = pokemonService.getPokemonDetails(1)
+                } catch (ex: Exception) {
+                    // ignore
+                }
+            }
         }
     }
 
     fun checkGuess(pokemon: Pokemon) {
         viewModelScope.launch {
-            // Add pokemon to guessed list
-            val tmp = _guessedPokemon.value.orEmpty().toMutableList()
-            tmp.add(pokemonService.getPokemonDetails(pokemon.id))
-            _guessedPokemon.value = tmp
+            try {
+                val tmp = _guessedPokemon.value.orEmpty().toMutableList()
+                tmp.add(pokemonService.getPokemonDetails(pokemon.id))
+                _guessedPokemon.value = tmp
 
-            val guessedIds = _guessedPokemon.value!!.map { p -> p.id }
+                val guessedIds = _guessedPokemon.value!!.map { p -> p.id }
+                _gamePokemon.value = _pokemonList.value.orEmpty().filter { it.id !in guessedIds }
 
-            // Update _gamePokemon
-            _gamePokemon.value = _pokemonList.value.orEmpty().filter { it.id !in guessedIds }
-
-            // Check if game won
-            if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) {
-                _gameState.value = true
-                updateProfileWithGame(tmp.size)
+                if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) {
+                    _gameState.value = true
+                    updateProfileWithGame(tmp.size)
+                }
+            } catch (e: Exception) {
+                // ignore
             }
         }
     }
 
-    private suspend fun updateProfileWithGame(guesses: Int)
-    {
-        val profile = _currentUser.first() // Collect the current profile once
-        val updatedProfile = profile.copy(
-            totalGuesses = (profile.totalGuesses + guesses),
-            gamesPlayed = (profile.gamesPlayed + 1)
-        )
-        profileService.updateProfile(updatedProfile)
+    private suspend fun updateProfileWithGame(guesses: Int) {
+        try {
+            val profile = _currentUser.first()
+            val updatedProfile = profile.copy(
+                totalGuesses = (profile.totalGuesses + guesses),
+                gamesPlayed = (profile.gamesPlayed + 1)
+            )
+            profileService.updateProfile(updatedProfile)
+        } catch (e: Exception) {
+            // ignore
+        }
     }
 
     fun resetGame() {
