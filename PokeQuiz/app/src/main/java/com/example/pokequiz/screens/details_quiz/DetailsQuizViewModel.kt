@@ -52,12 +52,12 @@ class DetailsQuizViewModel @Inject constructor(
     private fun shufflePokemon() {
         viewModelScope.launch {
             try {
-                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(1, "bulbasaur")
+                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(id = 1, name = "bulbasaur")
                 _currentPokemon.value = candidate
                 _currentDetails.value = pokemonService.getPokemonDetails(candidate.id)
             } catch (e: Exception) {
                 try {
-                    _currentPokemon.value = Pokemon(1, "bulbasaur")
+                    _currentPokemon.value = Pokemon(id = 1, name = "bulbasaur")
                     _currentDetails.value = pokemonService.getPokemonDetails(1)
                 } catch (ex: Exception) {
                     // ignore

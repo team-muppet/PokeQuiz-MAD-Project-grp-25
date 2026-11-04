@@ -63,13 +63,13 @@ class CardQuizViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(1, "bulbasaur")
+                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(id = 1, name = "bulbasaur")
                 _currentPokemon.value = candidate
                 _currentCard.value = cardService.getGen1Card(candidate.id)
                 _cardBlur.value = 15.dp
             } catch (e: Exception) {
                 try {
-                    _currentPokemon.value = Pokemon(1, "bulbasaur")
+                    _currentPokemon.value = Pokemon(id = 1, name = "bulbasaur")
                     _currentCard.value = cardService.getGen1Card(1)
                     _cardBlur.value = 15.dp
                 } catch (ex: Exception) {
