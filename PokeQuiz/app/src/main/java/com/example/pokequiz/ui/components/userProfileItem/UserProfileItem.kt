@@ -1,6 +1,5 @@
 package com.example.pokequiz.ui.components.userProfileItem
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,80 +7,87 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.pokequiz.R
 import com.example.pokequiz.model.UserProfile
-import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun UserProfileItem(rank: Int, userProfile: UserProfile, score: Int, modifier: Modifier = Modifier) {
-    var downloadUrl = remember { mutableStateOf("") }
-
-    // Download the image URL from Firebase Storage
-    LaunchedEffect(userProfile.profileImg) {
-        val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(userProfile.profileImg)
-        storageReference.downloadUrl.addOnSuccessListener { uri ->
-            downloadUrl.value = uri.toString()
-        }.addOnFailureListener { exception ->
-            Log.e("UserProfileItem", "Error generating download URL: ${exception.message}")
-        }
-    }
-
     Card(
-        modifier = Modifier
-            .padding(2.dp)
+        modifier = modifier
+            .padding(vertical = 4.dp, horizontal = 4.dp)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp),
+        elevation = CardDefaults.cardElevation(3.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Yellow,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = Color(0xFFFFCB05), // Classic Pokémon Yellow
+            contentColor = Color.Black
         ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(10.dp)
         ) {
-            // Display profile image with fixed size
+            // Profile image with fallback
             AsyncImage(
-                model = downloadUrl.value,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(userProfile.profileImg.ifEmpty { R.drawable.pokequiz })
+                    .fallback(R.drawable.pokequiz)
+                    .error(R.drawable.pokequiz)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = "Profile Image",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(100.dp)
-                    .padding(end = 4.dp)
+                    .size(60.dp)
+                    .clip(CircleShape)
             )
 
-            // Display username and score inside columns with boxes
-            Column {
+            // Display username and score
+            Column(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f)
+            ) {
                 Box(
                     modifier = Modifier
-                        .padding(bottom = 2.dp)
                         .fillMaxWidth()
-                        .background(Color.Blue)
-                        .padding(2.dp)
+                        .background(Color(0xFF2A75BB)) // Classic Pokémon Blue
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
-                    Text(text = "$rank. ${userProfile.username}", fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(
+                        text = "#$rank  ${userProfile.username}",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 15.sp
+                    )
                 }
                 Box(
                     modifier = Modifier
-                        .background(Color.Blue)
-                        .padding(2.dp)
+                        .padding(top = 4.dp)
+                        .background(Color(0xFF3C5AA6))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
-                    Row {
-                        Text(text = "Score: ", fontWeight = FontWeight.Bold, color = Color.White)
-                        Text(text = "$score", color = Color.White)
-                    }
+                    Text(
+                        text = "Accuracy: $score% (${userProfile.gamesPlayed} games, ${userProfile.totalGuesses} guesses)",
+                        color = Color.White,
+                        fontSize = 12.sp
+                    )
                 }
             }
         }

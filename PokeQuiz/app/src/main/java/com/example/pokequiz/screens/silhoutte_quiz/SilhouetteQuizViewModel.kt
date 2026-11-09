@@ -32,6 +32,7 @@ class SilhouetteQuizViewModel @Inject constructor(
     val gameState: LiveData<Boolean> = _gameState
 
     private val _currentUser = profileService.currentProfile
+
     init {
         loadPokemon()
     }
@@ -45,21 +46,21 @@ class SilhouetteQuizViewModel @Inject constructor(
     }
 
     private fun shufflePokemon() {
-        _currentPokemon.value = _pokemonList.value?.shuffled()?.first()
+        val list = _pokemonList.value.orEmpty()
+        if (list.isNotEmpty()) {
+            _currentPokemon.value = list.shuffled().first()
+        }
     }
 
     fun checkGuess(pokemon: Pokemon) {
         viewModelScope.launch {
-            // Add pokemon to guessed list
             val tmp = _guessedPokemon.value.orEmpty().toMutableList()
             tmp.add(pokemon)
             _guessedPokemon.value = tmp
 
-            // Update _gamePokemon
             _gamePokemon.value =
                 _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
-            // Check if game won
             if (pokemon.name.lowercase() == _currentPokemon.value?.name?.lowercase()) {
                 _gameState.value = true
                 updateProfileWithGame(tmp.size)
@@ -67,16 +68,17 @@ class SilhouetteQuizViewModel @Inject constructor(
         }
     }
 
-
-    private suspend fun updateProfileWithGame(guesses: Int)
-    {
-        val profile = _currentUser.first() // Collect the current profile once
-        println("LOPING IN COLLECT")
-        val updatedProfile = profile.copy(
-            totalGuesses = (profile.totalGuesses + guesses),
-            gamesPlayed = (profile.gamesPlayed + 1)
-        )
-        profileService.updateProfile(updatedProfile)
+    private suspend fun updateProfileWithGame(guesses: Int) {
+        try {
+            val profile = _currentUser.first()
+            val updatedProfile = profile.copy(
+                totalGuesses = (profile.totalGuesses + guesses),
+                gamesPlayed = (profile.gamesPlayed + 1)
+            )
+            profileService.updateProfile(updatedProfile)
+        } catch (e: Exception) {
+            // ignore
+        }
     }
 
     fun resetGame() {

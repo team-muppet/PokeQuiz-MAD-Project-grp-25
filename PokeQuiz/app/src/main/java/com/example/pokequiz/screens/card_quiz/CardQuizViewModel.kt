@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CardQuizViewModel @Inject constructor(
-    private val cardService : PTCGServiceImpl,
+    private val cardService: PTCGServiceImpl,
     private val pokemonService: PokemonService,
     private val profileService: ProfileService
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class CardQuizViewModel @Inject constructor(
         loadCards()
     }
 
-    private fun loadCards(){
+    private fun loadCards() {
         viewModelScope.launch {
             _pokemonList.value = pokemonService.getPokemon().take(151)
             _gamePokemon.value = _pokemonList.value
@@ -59,45 +59,58 @@ class CardQuizViewModel @Inject constructor(
         }
     }
 
-    private fun pickACard(){
+    private fun pickACard() {
         viewModelScope.launch {
-            _currentPokemon.value = _pokemonList.value?.shuffled()?.first()
-            _currentCard.value = cardService.getGen1Card(_currentPokemon.value?.id ?: 1)
-            _cardBlur.value = 15.dp
-            _isLoading.value = false
+            _isLoading.value = true
+            try {
+                val candidate = _pokemonList.value?.shuffled()?.firstOrNull() ?: Pokemon(id = 1, name = "bulbasaur")
+                _currentPokemon.value = candidate
+                _currentCard.value = cardService.getGen1Card(candidate.id)
+                _cardBlur.value = 15.dp
+            } catch (e: Exception) {
+                try {
+                    _currentPokemon.value = Pokemon(id = 1, name = "bulbasaur")
+                    _currentCard.value = cardService.getGen1Card(1)
+                    _cardBlur.value = 15.dp
+                } catch (ex: Exception) {
+                    // ignore
+                }
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun checkGuess(pokemon: Pokemon) {
         viewModelScope.launch {
-            // Add pokemon to guessed list
             val tmp = _guessedPokemon.value.orEmpty().toMutableList()
             tmp.add(pokemon)
             _guessedPokemon.value = tmp
 
-            // Update _gamePokemon
             _gamePokemon.value =
                 _pokemonList.value.orEmpty().filter { it !in _guessedPokemon.value.orEmpty() }
 
-            // Check if game won
             if (_currentPokemon.value?.name == pokemon.name) {
                 _gameState.value = true
                 _cardBlur.value = 0.dp
                 updateProfileWithGame(tmp.size)
-            };
-            else _cardBlur.value = _cardBlur.value?.minus(1.dp)
+            } else {
+                _cardBlur.value = _cardBlur.value?.minus(1.dp)
+            }
         }
     }
 
-    private suspend fun updateProfileWithGame(guesses: Int)
-    {
-        val profile = _currentUser.first() // Collect the current profile once
-        println("LOPING IN COLLECT")
-        val updatedProfile = profile.copy(
-            totalGuesses = (profile.totalGuesses + guesses),
-            gamesPlayed = (profile.gamesPlayed + 1)
-        )
-        profileService.updateProfile(updatedProfile)
+    private suspend fun updateProfileWithGame(guesses: Int) {
+        try {
+            val profile = _currentUser.first()
+            val updatedProfile = profile.copy(
+                totalGuesses = (profile.totalGuesses + guesses),
+                gamesPlayed = (profile.gamesPlayed + 1)
+            )
+            profileService.updateProfile(updatedProfile)
+        } catch (e: Exception) {
+            // ignore
+        }
     }
 
     fun resetGame() {
